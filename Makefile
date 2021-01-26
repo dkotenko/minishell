@@ -6,12 +6,12 @@
 #    By: clala <clala@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/15 16:58:46 by clala             #+#    #+#              #
-#    Updated: 2020/02/15 21:53:21 by clala            ###   ########.fr        #
+#    Updated: 2021/01/26 23:11:28 by clala            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 ALL_C =	main.c \
-		quotation.c \
+		#quotation.c \
 		exec_bin.c
 
 SRCDIR = ./src
@@ -38,7 +38,7 @@ $(NAME): $(LIBFT) $(OBJS)
 	$(CC) $(FLAGS) $(OBJS) -L $(LIBFT_DIR) -lft -o $@
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(INCLUDES) | $(OBJDIR)
-	$(CC) $(FLAGS) -I./includes -I.$(LIBFT_DIR)/includes $(SDL_INCS)  -c $< -o $@ 
+	$(CC) $(FLAGS) -I./$(INCLUDES_DIR) -I.$(LIBFT_DIR)/includes -c $< -o $@ 
 
 $(OBJDIR):
 	/bin/mkdir -p $(OBJDIR)
