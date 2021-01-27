@@ -6,13 +6,14 @@
 #    By: clala <clala@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/15 16:58:46 by clala             #+#    #+#              #
-#    Updated: 2021/01/26 23:11:28 by clala            ###   ########.fr        #
+#    Updated: 2021/01/27 19:06:25 by clala            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 ALL_C =	main.c \
-		#quotation.c \
-		exec_bin.c
+		quotation.c \
+		handle_error.c \
+		
 
 SRCDIR = ./src
 OBJDIR = ./objs
@@ -38,7 +39,7 @@ $(NAME): $(LIBFT) $(OBJS)
 	$(CC) $(FLAGS) $(OBJS) -L $(LIBFT_DIR) -lft -o $@
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(INCLUDES) | $(OBJDIR)
-	$(CC) $(FLAGS) -I./$(INCLUDES_DIR) -I.$(LIBFT_DIR)/includes -c $< -o $@ 
+	$(CC) $(FLAGS) -I./$(INCLUDES_DIR) -I./$(LIBFT_DIR)/includes -c $< -o $@ 
 
 $(OBJDIR):
 	/bin/mkdir -p $(OBJDIR)

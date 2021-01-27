@@ -7,13 +7,19 @@
 # include <stdio.h>
 # include <dirent.h>
 # include <sys/types.h>
+# include <stdbool.h>
+# include <unistd.h>
+# include <signal.h>
 
-typedef struct	s_quote_string
+# define SYMBOL_SINGLE_QUOTE 39
+# define SYMBOL_DOUBLE_QUOTE 34
+
+typedef struct	s_quote_info
 {
-	char		curr_quote_symbol;
-	int			curr_quote_flag;
+	char		q_symbol;
+	int			q_flag;
 	char		*s;
-}				t_quote_string;
+}				t_quote_info;
 
 
 typedef struct	s_shell
@@ -30,8 +36,13 @@ typedef struct	s_shell
 void			exec_bin(char *s);
 
 /*
-** exec_bin.c
+** quotation.c
 */
-int					handle_quotation(char **source_string);
+void				handle_quotes(char **input_string);
+
+/*
+** handle_error.c
+*/
+int				handle_error(char *s);
 
 #endif
