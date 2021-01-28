@@ -6,14 +6,16 @@
 #    By: clala <clala@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/15 16:58:46 by clala             #+#    #+#              #
-#    Updated: 2021/01/27 19:06:25 by clala            ###   ########.fr        #
+#    Updated: 2021/01/28 19:51:45 by clala            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 ALL_C =	main.c \
 		quotation.c \
 		handle_error.c \
-		exec_bin.c
+		exec_bin.c \
+		do_cd.c \
+		
 
 SRCDIR = ./src
 OBJDIR = ./objs

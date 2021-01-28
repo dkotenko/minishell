@@ -11,7 +11,6 @@
 # include <stdbool.h>
 # include <unistd.h>
 # include <signal.h>
-# include <errno.h>
 
 # define SYMBOL_SINGLE_QUOTE 39
 # define SYMBOL_DOUBLE_QUOTE 34
@@ -29,6 +28,7 @@ typedef struct	s_shell
 	char		*curr_path;
 	char		*command;
 	char		**args;
+	char		*prev_cd_dir;
 }				t_shell;
 
 /*
@@ -48,4 +48,9 @@ void				handle_quotes(char **input_string);
 */
 int				handle_error(char *s);
 
+/*
+** do_cd.c
+*/
+void			do_cd(char *s);
+int				is_cd_command(char *s);
 #endif

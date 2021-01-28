@@ -13,31 +13,18 @@ int			do_exit(void)
     
 }
 
+int			handle_tilde(char *s)
+{
+	//get $HOME from environ
+}
+
 int			do_echo(char *s)
 {
 	ft_printf("%s\n", s);
 	return (1);
 }
 
-
-
-void		do_cd(char *s)
-{
-	char	*dir_path;
-
-	s += ft_strlen("cd ");
-	dir_path = ft_strnew(ft_strlen(s));
-	ft_memcpy(dir_path, s, ft_strlen(s));
-	chdir(dir_path);
-	if (errno)
-		perror("cd");
-	
-	
-}
-
-
-
-int			main(void)
+int			main(int argc, char **argv, char **env)
 {
 	char	*s;
 	char	**splitted;
@@ -47,14 +34,13 @@ int			main(void)
 		//handle_quotes(&s);
 		//do_echo(s);
 		
-		if (ft_strnequ(s, "cd ", 3))
+		if (is_cd_command(s))
 			do_cd(s);
 		else 
 		{
 			splitted = ft_strsplit(s, ' ');
 			exec_prog(splitted);
 		}
-		
 		free(s);
 	}
 	return (0);
