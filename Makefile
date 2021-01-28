@@ -13,7 +13,7 @@
 ALL_C =	main.c \
 		quotation.c \
 		handle_error.c \
-		
+		exec_bin.c
 
 SRCDIR = ./src
 OBJDIR = ./objs
