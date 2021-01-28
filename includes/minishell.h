@@ -7,9 +7,11 @@
 # include <stdio.h>
 # include <dirent.h>
 # include <sys/types.h>
+# include <sys/wait.h>
 # include <stdbool.h>
 # include <unistd.h>
 # include <signal.h>
+# include <errno.h>
 
 # define SYMBOL_SINGLE_QUOTE 39
 # define SYMBOL_DOUBLE_QUOTE 34
@@ -33,7 +35,8 @@ typedef struct	s_shell
 ** exec_bin.c
 */
 
-void			exec_bin(char *s);
+void			exec_bin();
+int exec_prog(char **argv);
 
 /*
 ** quotation.c
