@@ -14,7 +14,7 @@
 
 # define SYMBOL_SINGLE_QUOTE 39
 # define SYMBOL_DOUBLE_QUOTE 34
-
+# define INIT_HTABLE_SIZE 353
 typedef struct	s_quote_info
 {
 	char		q_symbol;
@@ -29,12 +29,12 @@ typedef struct	s_shell
 	char		*command;
 	char		**args;
 	char		*prev_cd_dir;
+	t_htable	*env;
 }				t_shell;
 
 /*
 ** exec_bin.c
 */
-
 void			exec_bin();
 int exec_prog(char **argv);
 

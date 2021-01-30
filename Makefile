@@ -15,6 +15,7 @@ ALL_C =	main.c \
 		handle_error.c \
 		exec_bin.c \
 		do_cd.c \
+		environ.c \
 		
 
 SRCDIR = ./src
