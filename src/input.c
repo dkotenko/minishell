@@ -12,53 +12,25 @@
 
 #include "minishell.h"
 
-void 	print_error_bin(char *s)
+char				ft_getchar()
 {
- 	ft_printf("minishell: command not found: %s\n", s);
+	;
 }
 
-int exec_prog(char **argv, char **env)
+void				handle_input(t_shell *shell)
 {
- 	pid_t   my_pid;
- 	int 	 status, timeout /* unused ifdef WAIT_FOR_COMPLETION */;
+	int				c;   
+	struct termios	oldt;
+	struct termios	newt;
 
- 	if (0 == (my_pid = fork()))
- 	{
- 	 	if (-1 == execve(argv[0], argv , env))
- 	 	{
-			kill(my_pid, SIGTERM);
-			print_error_bin(argv[0]);
-			return -1;
- 	 	}
- 	}
-
- 	
- 	timeout = 3000;
- 	while (0 == waitpid(my_pid , &status , WNOHANG))
- 	{
- 	 	if ( --timeout < 0 )
- 	 	{
- 	 	 	 	perror("timeout");
- 	 	 	 	return -1;
- 	 	}
- 	 	sleep(1);
- 	}
-
- 	//printf("%s WEXITSTATUS %d WIFEXITED %d [status %d]\n",
- 	// 	 	argv[0], WEXITSTATUS(status), WIFEXITED(status), status);
-
- 	if (1 != WIFEXITED(status) || 0 != WEXITSTATUS(status)) {
- 	 	 	perror("%s failed, halt system");
- 	 	 	return -1;
- 	}
- 	kill(my_pid, SIGINT);
- 	free_2dchararr_terminated(env);
- 	return 0;
-}
-
-
-
-void 	exec_bin()
-{
- 	;
+	newt = oldt;
+	newt.c_lflag &= ~(ICANON | ECHO);
+	tcsetattr( STDIN_FILENO, TCSANOW, &newt);
+	while((c = getchar()))
+	{	  
+		ft_putchar(c);
+		if (c == '\n')
+			break ;
+	}
+	tcsetattr( STDIN_FILENO, TCSANOW, &oldt);
 }

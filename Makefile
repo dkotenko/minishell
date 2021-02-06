@@ -11,12 +11,11 @@
 # **************************************************************************** #
 
 ALL_C =	main.c \
-		quotation.c \
-		handle_error.c \
 		exec_bin.c \
 		do_cd.c \
 		environ.c \
-		
+		quotation.c \
+		input.c \
 
 SRCDIR = ./src
 OBJDIR = ./objs
@@ -26,15 +25,14 @@ OBJS = $(addprefix $(OBJDIR)/, $(ALL_OBJ))
 NAME = minishell
 
 INCLUDES_DIR = ./includes
-INCLUDES = $(INCLUDES_DIR)/minishell.h \
-		$(INCLUDES_DIR)/error.h
+INCLUDES = $(INCLUDES_DIR)/minishell.h
 
 
 LIBFT_DIR = ./libft
 LIBFT = $(LIBFT_DIR)/libft.a
 COMP_LIB = make -C $(LIBFT_DIR)
 CC = gcc
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror #-g -fsanitize=address
 
 all: $(LIBFT) $(OBJDIR) $(NAME)
 

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_putchar_fd.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
+/*   Updated: 2020/02/15 21:53:21 by clala            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int			is_quote(char c)
@@ -7,6 +19,7 @@ int			is_quote(char c)
 	return (0);
 }
 
+/*
 int			print_entry_quote(t_quote_info *q_info)
 {
 	if (q_info->q_symbol == SYMBOL_SINGLE_QUOTE)
@@ -91,3 +104,5 @@ void				handle_quotes(char **input_string)
 	*input_string = q_info.s; 
 	free(temp);
 }
+
+*/
