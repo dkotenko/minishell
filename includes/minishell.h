@@ -124,6 +124,6 @@ void		quote_tokenizer(char *s, t_quote *q, t_dlist *list);
 ** input.c
 */
 void		handle_input(t_shell *shell);
-
+void		interrupt(int a);
 
 #endif

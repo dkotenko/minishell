@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/02/06 21:20:46 by clala            ###   ########.fr       */
+/*   Updated: 2021/02/06 23:58:42 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,9 +98,10 @@ int			exec_implemented_commands(t_shell *shell, char *s)
 		return (1);
 	return (0);
 }
-void		interrupt()
+void		interrupt(int a)
 {
-	ft_printf("hello\n");
+	(void)a;
+	do_exit();
 }
 
 /*
@@ -239,7 +240,7 @@ int			split_by_semicolon(char *s)
 int			main(int argc, char **argv, char **env)
 {
 	char	*s;
-	char	**splitted;
+	
 	t_shell	*shell;
 	t_list	*input;
 
@@ -248,6 +249,7 @@ int			main(int argc, char **argv, char **env)
 	argc > 1 ? exit(0) : 0;
 	shell = t_shell_new();
 	s = shell->input->buf->s;
+	signal (SIGINT, &interrupt);
 	while (print_entry(shell))
 	{
 		handle_input(shell);
@@ -255,13 +257,17 @@ int			main(int argc, char **argv, char **env)
 		{
 			if (shell->input->status != INPUT_STATUS_SHELL)
 				continue ;
+			if (ft_strequ(s, "exit\n"))
+				do_exit();
 			//parser();
 			//executor();
+			/*
 			if (!exec_implemented_commands(shell, s))
 			{
 				exec_prog(splitted = ft_strsplit(s, ' '), get_environ(shell));
 				free_2dchararr_terminated(splitted);
 			}
+			*/
 			t_buffer_clean(shell->input->buf);
 		}
 	}
@@ -269,7 +275,7 @@ int			main(int argc, char **argv, char **env)
 	exit(0);
 
 	parse_system_environ(shell, env);
-	//signal (SIGINT,interrupt);
+	//
 	input = NULL;
 	
 	while ( get_next_line(STDIN_FILENO, &s))
