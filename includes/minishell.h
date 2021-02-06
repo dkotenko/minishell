@@ -13,6 +13,8 @@
 # include <unistd.h>
 # include <signal.h>
 # include <termios.h> 
+# include <term.h>
+# include <curses.h>
 
 # define SYMBOL_SINGLE_QUOTE 39
 # define SYMBOL_DOUBLE_QUOTE 34

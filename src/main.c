@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putchar_fd.c                                    :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2020/02/15 21:53:21 by clala            ###   ########.fr       */
+/*   Updated: 2021/02/06 21:20:46 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,10 +236,6 @@ int			split_by_semicolon(char *s)
 	return (1);
 }
 
-
-
-
-
 int			main(int argc, char **argv, char **env)
 {
 	char	*s;
@@ -248,40 +244,37 @@ int			main(int argc, char **argv, char **env)
 	t_list	*input;
 
 	
-	exit(0);
-
-	char *sa = "\"\"";
-	while (*sa)
-	{
-		ft_printf("%d\n", *sa);
-		sa++;
-	}
-	
-	split_by_quotes(sa);
-	
 	(void)argv;
 	argc > 1 ? exit(0) : 0;
 	shell = t_shell_new();
-	parse_system_environ(shell, env);
-	//signal (SIGINT,interrupt);
-	input = NULL;
-	
-	while (print_entry(shell) && get_next_line(STDIN_FILENO, &s))
-	{	
+	s = shell->input->buf->s;
+	while (print_entry(shell))
+	{
+		handle_input(shell);
 		if (!is_empty(s))
 		{
-			//lexer(shell, s);
 			if (shell->input->status != INPUT_STATUS_SHELL)
 				continue ;
 			//parser();
 			//executor();
-			
 			if (!exec_implemented_commands(shell, s))
 			{
 				exec_prog(splitted = ft_strsplit(s, ' '), get_environ(shell));
 				free_2dchararr_terminated(splitted);
 			}
+			t_buffer_clean(shell->input->buf);
 		}
+	}
+
+	exit(0);
+
+	parse_system_environ(shell, env);
+	//signal (SIGINT,interrupt);
+	input = NULL;
+	
+	while ( get_next_line(STDIN_FILENO, &s))
+	{	
+		
 		free(s);
 	}
 	return (0);
