@@ -1,20 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   input.c                                            :+:      :+:    :+:   */
+/*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/02/06 23:57:53 by clala            ###   ########.fr       */
+/*   Updated: 2021/02/07 19:13:44 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include "ft_printf.h"
-# include "error.h"
 # include <stdio.h>
 # include <dirent.h>
 # include <sys/types.h>
@@ -27,30 +25,9 @@
 # include <term.h>
 # include <curses.h>
 
-# define SYMBOL_SINGLE_QUOTE 39
-# define SYMBOL_DOUBLE_QUOTE 34
-# define ENV_HOME "HOME"
-# define ENV_PWD "PWD"
-# define ENV_OLDPWD "OLDPWD"
-# define SHELL_NAME "minishell"
-# define CHAR_BUFF_SIZE 1
-
-enum			input_status
-{
-	INPUT_STATUS_SHELL,
-	INPUT_STATUS_STRONG_QUOTE,
-	INPUT_STATUS_WEAK_QUOTE,
-	INPUT_STATUS_BACKSLASH,
-	INPUT_STATUS_SEMICOLON
-}				e_input_status;
-
-enum			lex_type
-{
-	LEX_TYPE_NORMAL,
-	LEX_TYPE_QUOTED
-}				e_lex_type;
-
-
+# include "ft_printf.h"
+# include "error.h"
+# include "const.h"
 
 typedef struct	s_quote
 {
@@ -64,7 +41,7 @@ typedef struct	s_quote
 typedef struct	s_input
 {
 	char		q_symbol;
-	t_dlist		*dlist;
+	t_dlist		*commands;
 	int			status;
 	int			prev_status;
 	t_buffer	*buf;
@@ -80,8 +57,8 @@ typedef struct	s_lex_token
 
 typedef struct	s_command
 {
-	char		*command;
-	char		*argument;
+	char		*cmd_name;
+	t_dlist		*args;
 }				t_command;
 
 typedef struct	s_shell

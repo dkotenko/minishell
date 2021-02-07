@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/02/06 23:58:42 by clala            ###   ########.fr       */
+/*   Updated: 2021/02/07 19:00:11 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,28 +154,43 @@ void				add_token(t_dlist *dlist, char *s, int lex_type)
 
 void		set_input_status(t_input *input, char c)
 {
-	if (is_quote(c))
+	if (s[i] == ';')
 	{
-		;
+		if (input->status == INPUT_STATUS_NORMAL)
+			get_token(start, i);
 	}
-	if (q->q_flag == false)
+	else if (s[i] == '\\')
 	{
-		q->q_flag = true;
-		q->q_symbol = c;
-		q->has_set = 1;
+		if (input->status == INPUT_STATUS_NORMAL)
+			set_status_backspace;
+		else ()
+			set_status_normal;
 	}
-	else if (q->q_flag == true)
+	else if (s[i] == SYMBOL_SINGLE_QUOTE)
 	{
-		if (q->q_symbol == c)
-		{
-			q->q_flag = false;
-			q->q_symbol = 0;
-			q->has_set = 1;
-		}
+		if (input->status == INPUT_STATUS_NORMAL)
+			set_status_strong_quote;
+		else if (s[i] == SYMBOL_SINGLE_QUOTE)
+			set_status_normal;
+	}	
+	else if (s[i] == SYMBOL_DOUBLE_QUOTE)
+	{
+		if (input->status == INPUT_STATUS_NORMAL)
+			set_status_weak_quote;
+		else if (s[i] == SYMBOL_DOUBLE_QUOTE)
+			set_status_normal;
 	}
+	else if (s[i] == $)
+	{
+		set_status_variable;
+	}
+		
 }
 
-
+void		set_status_backspace(t_shell *shell)
+{
+	
+}
 
 void		get_tokens(t_shell *shell, char *s)
 {
@@ -184,9 +199,33 @@ void		get_tokens(t_shell *shell, char *s)
 	i = 0;
 	while (s[i])
 	{
-		(';', '\\', '\'', '\"', '$');
+		char *a = {';', '\\', '\'', '\"', '$'};
 		set_input_status(shell, s[i]);
+		if (s[i] == ';')
+			get_token(start, i);
+		else if (s[i] == '\\')
+		{
+			set_status_backspace;
+		}
+			
+		else if (s[i] == SYMBOL_SINGLE_QUOTE)
+		{
+			set_status_strong_quote;
+		}
+			
+		else if (s[i] == SYMBOL_DOUBLE_QUOTE)
+		{
+			set_status_weak_quote;
+		}
+			
+		else if (s[i] == $)
+		{
+			set_status_variable;
+		}
+			
+		shell->input->prev_status = shell->input->status;
 	}
+	
 }
 
 int			is_status_to_continue(int status)
