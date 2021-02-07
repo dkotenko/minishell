@@ -16,6 +16,7 @@ ALL_C =	main.c \
 		environ.c \
 		quotation.c \
 		input.c \
+		signals.c \
 
 SRCDIR = ./src
 OBJDIR = ./objs

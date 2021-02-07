@@ -1,6 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   input.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
+/*   Updated: 2021/02/06 23:57:53 by clala            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
-
 
 # include "ft_printf.h"
 # include "error.h"
@@ -22,12 +33,15 @@
 # define ENV_PWD "PWD"
 # define ENV_OLDPWD "OLDPWD"
 # define SHELL_NAME "minishell"
+# define CHAR_BUFF_SIZE 1
 
 enum			input_status
 {
 	INPUT_STATUS_SHELL,
-	INPUT_STATUS_QUOTE,
-	INPUT_STATUS_BACKSLASH
+	INPUT_STATUS_STRONG_QUOTE,
+	INPUT_STATUS_WEAK_QUOTE,
+	INPUT_STATUS_BACKSLASH,
+	INPUT_STATUS_SEMICOLON
 }				e_input_status;
 
 enum			lex_type
@@ -50,11 +64,11 @@ typedef struct	s_quote
 typedef struct	s_input
 {
 	char		q_symbol;
-	int			q_flag;
-	int			input_status;
 	t_dlist		*dlist;
 	int			status;
+	int			prev_status;
 	t_buffer	*buf;
+	char		*start;
 }				t_input;
 
 typedef struct	s_lex_token
