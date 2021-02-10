@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/02/07 19:13:44 by clala            ###   ########.fr       */
+/*   Updated: 2021/02/10 19:10:22 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,4 +127,5 @@ void			handle_tabs_and_spaces(char **s);
 int				is_empty_string(char *s);
 int				is_space_tab(int c);
 int			here(void);
+void		add_token(t_input *input, char *s, int i);
 #endif

@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/02/07 19:00:11 by clala            ###   ########.fr       */
+/*   Updated: 2021/02/10 19:31:07 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void				add_token(t_dlist *dlist, char *s, int lex_type)
 
 void		print_token(t_buf *token)
 {
-	ft_printf("token:%s", token->s);
+	ft_printf("token:%s\n", token->s);
 }
 
 void		print_command(t_dlist *cmd)
@@ -85,6 +85,37 @@ void		print_commands(t_shell *shell)
 	{
 		print_command(temp->data);
 		temp = temp->next;
+	}
+}
+
+void		free_token(t_dlist_node *token)
+{
+	t_buf_free(token->data);
+	free((t_buf *)token->data);
+}
+
+void		free_tokens(t_dlist *cmd)
+{
+	t_dlist_node	*temp;
+	t_dlist_node	*temp_next;
+
+	temp = cmd->head;
+	
+	while (temp)
+	{
+		temp
+	}
+	
+}
+
+void		clean_commands(t_shell *shell)
+{
+	t_dlist	*cmd;
+	t_dlist	*token;
+
+	while (shell->input->cmd->size != 1)
+	{
+		
 	}
 }
 
@@ -120,9 +151,9 @@ int			main(int argc, char **argv, char **env)
 			//ft_printf("%s\n", s);
 			ft_strnequ(s, "exit", 4) ? do_exit() : 0;
 			create_tokens(shell, s);
-			//ft_printf("%d %s\n", shell->input->buf->i, s);	
+			ft_printf("%d %s\n", shell->input->buf->i, s);	
 			print_commands(shell);
-			
+			clean_commands(shell);
 			//parser();
 			//executor();
 			/*

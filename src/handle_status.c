@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   handle_status.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/02/07 19:00:11 by clala            ###   ########.fr       */
+/*   Updated: 2021/02/10 19:10:04 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,14 +60,10 @@ void		set_input_status(t_input *input, char c)
 
 void		handle_status_space_tab(t_input *input, char *s, int i)
 {
-	if (is_quote_bs_status(input->status))
-		t_buffer_add_char(input->buf, s[i]);
-	else if (s + input->buf->i == input->start_token)
+	if (s + input->buf->i == input->start_token)
 		return ;
-		/*
-	else
+	if (input->prev_status != INPUT_STATUS_SPACE_TAB)
 		add_token(input, s, i);
-		*/
 }
 
 void		handle_status_variable(t_shell *shell, char *s, int *i)
@@ -125,19 +121,54 @@ void		add_token(t_input *input, char *s, int i)
 
 	to_token = ft_strndup(input->start_token, s + i - input->start_token);
 	curr_tokens = (t_dlist *)(input->cmd->tail->data);
-	
 	((t_buffer *)(curr_tokens->tail->data))->s = to_token;
-	
-	
 	token = t_buf_create(0);
 	t_dlist_append(curr_tokens, t_dlist_node_new(token, sizeof(t_buf)));
-	set_status(input, INPUT_STATUS_NORMAL);
+	//set_status(input, INPUT_STATUS_NORMAL);
+	input->start_token = s + i + 1;
 }
 
 void		handle_status_weak_quote(t_input *input, char *s)
 {
 	(void)input;
 	(void)s;
+}
+
+/*
+**	\a	07	Alert (Beep, Bell) (added in C89)[1]
+**	\b	08	Backspace
+**	\e	1B	Escape character
+**	\f	0C	Formfeed Page Break
+**	\n	0A	Newline (Line Feed); see notes below
+**	\r	0D	Carriage Return
+**	\t	09	Horizontal Tab
+**	\v	0B	Vertical Tab
+**	\\	5C	Backslash
+**	\'	27	Apostrophe or single quotation mark
+**	\"	22	Double quotation mark
+**	\?	3F	Question mark (used to avoid trigraphs)
+**
+**
+**	c - char after backslash
+*/
+char		get_escape_sequence(char c)
+{
+	char	esc;
+
+	esc = 0;
+	esc = c == 'a' ? 0x07 : esc;
+	esc = c == 'b' ? 0x08 : esc;
+	esc = c == 'e' ? 0x1B : esc;
+	esc = c == 'f' ? 0x0C : esc;
+	esc = c == 'n' ? 0x0A : esc;
+	esc = c == 'r' ? 0x0D : esc;
+	esc = c == 't' ? 0x09 : esc;
+	esc = c == 'v' ? 0x0B : esc;
+	esc = c == '\\' ? 0x5C : esc;
+	esc = c == '\'' ? 0x27 : esc;
+	esc = c == '\"' ? 0x22 : esc;
+	esc = c == '?' ? 0x3F : esc;
+	return (esc);
 }
 
 void		handle_status_next_line(t_input *input, char *s, int *i)
@@ -172,6 +203,11 @@ void		create_tokens(t_shell *shell, char *s)
 		else if (status == INPUT_STATUS_SEMICOLON)
 		{
 			ft_printf("INPUT_STATUS_SEMICOLON\n");
+			;//handle_status_semicolon(shell->input, s);
+		}
+		else if (status == INPUT_STATUS_BACKSLASH)
+		{
+			ft_printf("INPUT_STATUS_BACKSLASH\n");
 			;//handle_status_semicolon(shell->input, s);
 		}
 		else if (status == INPUT_STATUS_STRONG_QUOTE)
