@@ -41,32 +41,24 @@ typedef struct	s_quote
 typedef struct	s_input
 {
 	char		q_symbol;
-	t_dlist		*commands;
+	t_dlist		*cmd;
 	int			status;
 	int			prev_status;
 	t_buffer	*buf;
-	char		*start;
+	char		*start_token;
+	char		*start_cmd;
 }				t_input;
 
-typedef struct	s_lex_token
+/*
+typedef struct	s_token
 {
-	char		*s;
+	t_buffer	*buf;
 	int			type;
-}				t_lex_token;
-
-
-typedef struct	s_command
-{
-	char		*cmd_name;
-	t_dlist		*args;
-}				t_command;
+}				t_token;
+*/
 
 typedef struct	s_shell
 {
-	char		*curr_path;
-	char		*command;
-	char		**args;
-	char		*prev_cd_dir;
 	t_input		*input;
 	t_htable	*env;
 }				t_shell;
@@ -75,13 +67,15 @@ typedef struct	s_shell
 ** exec_bin.c
 */
 void			exec_bin();
-int exec_prog(char **argv, char **env);
+int 			exec_prog(char **argv, char **env);
+int				do_exit();
+int				do_echo(char *s);
 
 /*
 ** quotation.c
 */
-void				handle_quotes(char **input_string);
-int			is_quote(char c);
+void			handle_quotes(char **input_string);
+int				is_quote(char c);
 
 /*
 ** handle_error.c
@@ -91,7 +85,7 @@ int				handle_error(char *s);
 /*
 ** do_cd.c
 */
-int			do_cd(t_shell *shell, char *s);
+int				do_cd(t_shell *shell, char *s);
 int				is_cd_command(char *s);
 
 
@@ -99,22 +93,38 @@ int				is_cd_command(char *s);
 /*
 ** environ.c
 */
-void		parse_system_environ(t_shell *shell, char **env);
-int			do_environ(t_shell *shell, char *s);
-void		do_env(t_shell *shell, char *s);
-void		unset_env(t_shell *shell, char *key);
-int			set_env(t_shell *shell, char *key, char *value);
-char		*get_env(t_shell *shell, char *key);
-char		**get_environ(t_shell *shell);
+void			parse_system_environ(t_shell *shell, char **env);
+int				do_environ(t_shell *shell, char *s);
+void			do_env(t_shell *shell, char *s);
+void			unset_env(t_shell *shell, char *key);
+int				set_env(t_shell *shell, char *key, char *value);
+char			*get_env(t_shell *shell, char *key);
+char			**get_environ(t_shell *shell);
 
 
-void		quote_tokenizer(char *s, t_quote *q, t_dlist *list);
+void			quote_tokenizer(char *s, t_quote *q, t_dlist *list);
 
 
 /*
 ** input.c
 */
-void		handle_input(t_shell *shell);
-void		interrupt(int a);
+void			handle_input(t_shell *shell);
+void			interrupt(int a);
+t_input			*t_input_new(void);
 
+/*
+**handle_status.c
+*/
+void			handle_status_space_tab(t_input *input, char *s, int i);
+void			create_tokens(t_shell *shell, char *s);
+void			handle_status_semicolon(t_input *input, char *s);
+
+/*
+**handle_status_aux.c
+*/
+int				is_quote_bs_status(int status);
+void			handle_tabs_and_spaces(char **s);
+int				is_empty_string(char *s);
+int				is_space_tab(int c);
+int			here(void);
 #endif

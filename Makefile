@@ -17,6 +17,8 @@ ALL_C =	main.c \
 		quotation.c \
 		input.c \
 		signals.c \
+		handle_status.c \
+		handle_status_aux.c \
 
 SRCDIR = ./src
 OBJDIR = ./objs
@@ -38,7 +40,7 @@ FLAGS = -Wall -Wextra -Werror #-g -fsanitize=address
 all: $(LIBFT) $(OBJDIR) $(NAME)
 
 $(NAME): $(LIBFT) $(OBJS)
-	$(CC) $(FLAGS) $(OBJS) -L $(LIBFT_DIR) -lft -o $@
+	$(CC) $(FLAGS) $(OBJS) -L $(LIBFT_DIR) -o $@ -lft
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(INCLUDES) | $(OBJDIR)
 	$(CC) $(FLAGS) -I./$(INCLUDES_DIR) -I./$(LIBFT_DIR)/includes -c $< -o $@ 

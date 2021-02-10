@@ -56,9 +56,38 @@ int exec_prog(char **argv, char **env)
  	return 0;
 }
 
-
+int			exec_implemented_commands(t_shell *shell, char *s)
+{
+	ft_strequ("exit", s) ? do_exit() : 0;
+	if (ft_strequ(s, "env") || ft_strequ(s, "setenv ") ||
+	ft_strequ(s, "unsetenv "))
+		return (do_environ(shell, s));
+	if (ft_strequ(s, "echo") && ft_printf("%s\n", s))
+		return (1);
+	if (ft_strequ(s, "echo ") && do_echo(s))
+		return (1);
+	if ((ft_strequ(s, "cd") || ft_strnequ(s, "cd ", 3)) && do_cd(shell, s))
+		return (1);
+	return (0);
+}
 
 void 	exec_bin()
 {
  	;
+}
+
+int			do_exit()
+{	
+	//kill(getppid(), SIGKILL); // close terminal
+	exit(0);
+}
+
+int			do_echo(char *s)
+{
+	char	**splitted;
+
+	splitted = ft_strsplit(s, ' ');
+	ft_printf("%s\n", splitted[1]);
+	free_2dchararr_terminated(splitted);
+	return (1);
 }

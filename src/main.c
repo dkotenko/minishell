@@ -14,46 +14,19 @@
 
 int			print_entry(t_shell *shell)
 {
-	if (shell->input->status == INPUT_STATUS_SHELL)
-		ft_printf("$> ");
-	else if (shell->input->status == INPUT_STATUS_QUOTE)
-	{
-		if (shell->input->q_symbol == SYMBOL_SINGLE_QUOTE)
-			ft_printf("quote> ");
-		else if (shell->input->q_symbol == SYMBOL_DOUBLE_QUOTE)
-			ft_printf("dquote> ");
-	}
-	else if (shell->input->status == INPUT_STATUS_BACKSLASH)
+	int		status;
+	
+	status = shell->input->status;
+	if (status == INPUT_STATUS_STRONG_QUOTE)
+		ft_printf("quote> ");
+	else if (status == INPUT_STATUS_WEAK_QUOTE)
+		ft_printf("dquote> ");
+	else if (status == INPUT_STATUS_BACKSLASH)
 		ft_printf("> ");
+	else
+		ft_printf("$> ");
+	//fflush(stdout);
 	return (1);
-}
-
-int			do_exit()
-{	
-	//kill(getppid(), SIGKILL); // close terminal
-	exit(0);
-    
-}
-
-int			do_echo(char *s)
-{
-	char	**splitted;
-
-	splitted = ft_strsplit(s, ' ');
-	ft_printf("%s\n", splitted[1]);
-	free_2dchararr_terminated(splitted);
-	return (1);
-}
-
-t_input		*t_input_new(void)
-{
-	t_input	*new;
-
-	new = (t_input *)ft_memalloc(sizeof(t_input));
-	!new ? handle_error(ERR_MALLOC) : 0;
-	new->dlist = t_dlist_new();
-	new->buf = t_buffer_create(T_BUFFER_BUFF_SIZE);
-	!new->buf ? handle_error(ERR_MALLOC) : 0;
 }
 
 t_shell		*t_shell_new(void)
@@ -69,200 +42,87 @@ t_shell		*t_shell_new(void)
 	return (new);
 }
 
-
-void		handle_tabs_and_spaces(char **s)
-{
-	char	*temp;
-
-	temp = *s;
-	*s = ft_strtrim(*s);
-	free(temp);
-}
-
-int			is_empty(char *s)
-{
-	int		i;
-
-	i = -1;
-	while (s[++i])
-	{
-		if (!(s[i] == ' ' || s[i] == '\t'))
-			return (0);
-	}
-	return (1);
-}
-
-int			exec_implemented_commands(t_shell *shell, char *s)
-{
-	ft_strequ("exit", s) ? do_exit() : 0;
-	if (ft_strequ(s, "env") || ft_strequ(s, "setenv ") ||
-	ft_strequ(s, "unsetenv "))
-		return (do_environ(shell, s));
-	if (ft_strequ(s, "echo") && ft_printf("%s\n", s))
-		return (1);
-	if (ft_strequ(s, "echo ") && do_echo(s))
-		return (1);
-	if ((ft_strequ(s, "cd") || ft_strnequ(s, "cd ", 3)) && do_cd(shell, s))
-		return (1);
-	return (0);
-}
-
-
 /*
-void		lexer(t_shell *shell, char *s)
+void				add_token(t_dlist *dlist, char *s, int lex_type)
 {
-	//ft_lstadd() shell->input->input
-	//handle_tabs_and_spaces(&s);
-	handle_quotes(&s);
+	t_token		*token;
+	t_dlist_node	*node;
+
+	token = (t_token *)ft_memalloc(sizeof(t_token));
+	!token ? handle_error(ERR_MALLOC) : 0;
+	token->s = NULL;
+	token->type = lex_type;
+	node = t_dlist_node_new(token, sizeof(t_token));
+	t_dlist_append(dlist, node);
 }
 */
 
-
-
-void	set_quote(t_quote *q, char c)
+void		print_token(t_buf *token)
 {
-	if (q->q_flag == false)
-	{
-		q->q_flag = true;
-		q->q_symbol = c;
-		q->has_set = 1;
-	}
-	else if (q->q_flag == true)
-	{
-		if (q->q_symbol == c)
-		{
-			q->q_flag = false;
-			q->q_symbol = 0;
-			q->has_set = 1;
-		}
-	}
+	ft_printf("token:%s", token->s);
 }
 
-void				add_token(t_dlist *dlist, char *s, int lex_type)
+void		print_command(t_dlist *cmd)
 {
-	t_lex_token		*token;
-	t_dlist_node	*node;
+	t_dlist_node *temp;
 
-	token = (t_lex_token *)ft_memalloc(sizeof(t_lex_token));
-	!token ? handle_error(ERR_MALLOC) : 0;
-	token->s = s;
-	token->type = lex_type;
-	node = t_dlist_node_new(token, sizeof(t_lex_token));
-	t_dlist_append(dlist, node);
+	ft_printf("==== command start ====\n");
+	temp = cmd->head;
+	while (temp)
+	{
+		print_token((t_buf *)temp->data);
+		temp = temp->next;
+	}
+	ft_printf("===== command end =====\n");
 }
 
-
-void		set_input_status(t_input *input, char c)
+void		print_commands(t_shell *shell)
 {
-	if (s[i] == ';')
+	t_dlist_node *temp;
+
+	temp = shell->input->cmd->head;
+	while (temp)
 	{
-		if (input->status == INPUT_STATUS_NORMAL)
-			get_token(start, i);
+		print_command(temp->data);
+		temp = temp->next;
 	}
-	else if (s[i] == '\\')
-	{
-		if (input->status == INPUT_STATUS_NORMAL)
-			set_status_backspace;
-		else ()
-			set_status_normal;
-	}
-	else if (s[i] == SYMBOL_SINGLE_QUOTE)
-	{
-		if (input->status == INPUT_STATUS_NORMAL)
-			set_status_strong_quote;
-		else if (s[i] == SYMBOL_SINGLE_QUOTE)
-			set_status_normal;
-	}	
-	else if (s[i] == SYMBOL_DOUBLE_QUOTE)
-	{
-		if (input->status == INPUT_STATUS_NORMAL)
-			set_status_weak_quote;
-		else if (s[i] == SYMBOL_DOUBLE_QUOTE)
-			set_status_normal;
-	}
-	else if (s[i] == $)
-	{
-		set_status_variable;
-	}
-		
 }
-
-void		set_status_backspace(t_shell *shell)
-{
-	
-}
-
-void		get_tokens(t_shell *shell, char *s)
-{
-	int		i;
-
-	i = 0;
-	while (s[i])
-	{
-		char *a = {';', '\\', '\'', '\"', '$'};
-		set_input_status(shell, s[i]);
-		if (s[i] == ';')
-			get_token(start, i);
-		else if (s[i] == '\\')
-		{
-			set_status_backspace;
-		}
-			
-		else if (s[i] == SYMBOL_SINGLE_QUOTE)
-		{
-			set_status_strong_quote;
-		}
-			
-		else if (s[i] == SYMBOL_DOUBLE_QUOTE)
-		{
-			set_status_weak_quote;
-		}
-			
-		else if (s[i] == $)
-		{
-			set_status_variable;
-		}
-			
-		shell->input->prev_status = shell->input->status;
-	}
-	
-}
-
-int			is_status_to_continue(int status)
-{
-	if (status == INPUT_STATUS_BACKSLASH ||
-		status == INPUT_STATUS_STRONG_QUOTE ||
-		status == INPUT_STATUS_WEAK_QUOTE)
-		return (1);
-	return (0);
-}
-
-
-
 
 int			main(int argc, char **argv, char **env)
 {
 	char	*s;
-	
 	t_shell	*shell;
-	t_list	*input;
 
 	
 	(void)argv;
 	argc > 1 ? exit(0) : 0;
 	shell = t_shell_new();
+
 	s = shell->input->buf->s;
 	signal (SIGINT, &interrupt);
+	parse_system_environ(shell, env);
 	while (print_entry(shell))
 	{
+		
 		handle_input(shell);
-		if (!is_empty(s))
+		//ft_printf("%d\n", shell->input->buf->i);
+		//ft_printf("%d\n", shell->input->buf->s[0]);
+		//ft_printf("%d\n", shell->input->buf->s[1]);
+		//ft_printf("%d\n", shell->input->buf->s[2]);
+		//ft_printf("%d %s len: %d\n", shell->input->buf->s[0], s, shell->input->buf->i);
+		//ft_printf("%d\n", !is_empty_string(s));
+		
+		
+		if (!is_empty_string(s))
 		{
-			if (is_status_to_continue(shell->input->status))
+			if (is_quote_bs_status(shell->input->status))
 				continue ;
-			if (ft_strequ(s, "exit\n"))
-				do_exit();
-			get_tokens(shell, s);
+			//ft_printf("%s\n", s);
+			ft_strnequ(s, "exit", 4) ? do_exit() : 0;
+			create_tokens(shell, s);
+			//ft_printf("%d %s\n", shell->input->buf->i, s);	
+			print_commands(shell);
+			
 			//parser();
 			//executor();
 			/*
@@ -272,20 +132,10 @@ int			main(int argc, char **argv, char **env)
 				free_2dchararr_terminated(splitted);
 			}
 			*/
-			t_buffer_clean(shell->input->buf);
 		}
-	}
-
-	exit(0);
-
-	parse_system_environ(shell, env);
-	//
-	input = NULL;
-	
-	while ( get_next_line(STDIN_FILENO, &s))
-	{	
 		
-		free(s);
+		t_buffer_clean(shell->input->buf);
 	}
+	exit(0);
 	return (0);
 }

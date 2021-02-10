@@ -14,7 +14,9 @@
 
 int			is_quote(char c)
 {
-	if (c == SYMBOL_DOUBLE_QUOTE || c == SYMBOL_SINGLE_QUOTE)
+	if (c == SYMBOL_DOUBLE_QUOTE ||
+		c == SYMBOL_SINGLE_QUOTE ||
+		c == '\\')
 		return (1);
 	return (0);
 }
