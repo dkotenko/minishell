@@ -28,8 +28,9 @@ OBJS = $(addprefix $(OBJDIR)/, $(ALL_OBJ))
 NAME = minishell
 
 INCLUDES_DIR = ./includes
-INCLUDES = $(INCLUDES_DIR)/minishell.h
-
+ALL_INCLUDES = 	minishell.h \
+				const.h 
+INCLUDES =  $(addprefix $(INCLUDES_DIR)/, $(ALL_INCLUDES))
 
 LIBFT_DIR = ./libft
 LIBFT = $(LIBFT_DIR)/libft.a
@@ -39,16 +40,16 @@ FLAGS = -Wall -Wextra -Werror #-g -fsanitize=address
 
 all: $(LIBFT) $(OBJDIR) $(NAME)
 
-$(NAME): $(LIBFT) $(OBJS)
-	$(CC) $(FLAGS) $(OBJS) -L $(LIBFT_DIR) -o $@ -lft
+$(NAME): $(OBJS) $(LIBFT)
+	$(CC) $(FLAGS) $(OBJS) -o $@ -L $(LIBFT_DIR) -lft
+
+$(LIBFT): lib
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(INCLUDES) | $(OBJDIR)
 	$(CC) $(FLAGS) -I./$(INCLUDES_DIR) -I./$(LIBFT_DIR)/includes -c $< -o $@ 
 
 $(OBJDIR):
 	/bin/mkdir -p $(OBJDIR)
-
-$(LIBFT): lib
 
 lib:
 	@$(COMP_LIB)
@@ -63,4 +64,7 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: lib clean fclean all re
+debug:: FLAGS+=-g -fsanitize=address
+debug:: re
+
+.PHONY: lib clean fclean all re debug

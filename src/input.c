@@ -17,17 +17,26 @@ char				ft_getchar()
 	return (0);
 }
 
+void		init_cmd(t_dlist *cmd)
+{
+	t_dlist	*tokens;
+
+	tokens = t_dlist_new();
+	
+	t_dlist_append(cmd, t_dlist_node_new(tokens, sizeof(t_dlist *)));
+	ft_printf("%d\n", cmd->size);
+	t_dlist_append(tokens, t_dlist_node_new(t_buffer_create(0), sizeof(t_buf *)));
+}
+
 t_input		*t_input_new(void)
 {
 	t_input	*new;
-	t_dlist	*tokens;
 
 	new = (t_input *)ft_memalloc(sizeof(t_input));
 	new->cmd = t_dlist_new();
 	new->buf = t_buffer_create(0);
-	tokens = t_dlist_new();
-	t_dlist_append(new->cmd, t_dlist_node_new(tokens, sizeof(t_dlist *)));
-	t_dlist_append(tokens, t_dlist_node_new(t_buf_create(0), sizeof(t_buf *)));
+	init_cmd(new->cmd);
+	
 	return (new);
 }
 

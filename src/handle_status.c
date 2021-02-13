@@ -66,6 +66,11 @@ void		handle_status_space_tab(t_input *input, char *s, int i)
 		add_token(input, s, i);
 }
 
+void		handle_status_next_line(t_input *input, char *s, int *i)
+{
+	add_token(input, s, *i);
+}
+
 void		handle_status_variable(t_shell *shell, char *s, int *i)
 {
 	int		start;
@@ -115,14 +120,14 @@ void		handle_status_semicolon(t_input *input, char *s)
 
 void		add_token(t_input *input, char *s, int i)
 {
-	char	*to_token;
-	t_dlist	*curr_tokens;
-	t_buf	*token;
+	char		*to_token;
+	t_dlist		*curr_tokens;
+	t_buffer	*token;
 
 	to_token = ft_strndup(input->start_token, s + i - input->start_token);
 	curr_tokens = (t_dlist *)(input->cmd->tail->data);
 	((t_buffer *)(curr_tokens->tail->data))->s = to_token;
-	token = t_buf_create(0);
+	token = t_buffer_create(0);
 	t_dlist_append(curr_tokens, t_dlist_node_new(token, sizeof(t_buf)));
 	//set_status(input, INPUT_STATUS_NORMAL);
 	input->start_token = s + i + 1;
@@ -171,10 +176,7 @@ char		get_escape_sequence(char c)
 	return (esc);
 }
 
-void		handle_status_next_line(t_input *input, char *s, int *i)
-{
-	add_token(input, s, *i);
-}
+
 
 void		create_tokens(t_shell *shell, char *s)
 {
