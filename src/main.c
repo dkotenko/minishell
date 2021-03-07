@@ -12,23 +12,6 @@
 
 #include "minishell.h"
 
-int			print_entry(t_shell *shell)
-{
-	int		status;
-	
-	status = shell->input->status;
-	if (status == INPUT_STATUS_STRONG_QUOTE)
-		ft_printf("quote> ");
-	else if (status == INPUT_STATUS_WEAK_QUOTE)
-		ft_printf("dquote> ");
-	else if (status == INPUT_STATUS_BACKSLASH)
-		ft_printf("> ");
-	else
-		ft_printf("$> ");
-	//fflush(stdout);
-	return (1);
-}
-
 t_shell		*t_shell_new(void)
 {
 	t_shell	*new;
@@ -40,156 +23,71 @@ t_shell		*t_shell_new(void)
 	return (new);
 }
 
-/*
-void				add_token(t_dlist *dlist, char *s, int lex_type)
+void		separate_cmd_args(char *s)
 {
-	t_token		*token;
-	t_dlist_node	*node;
-
-	token = (t_token *)ft_memalloc(sizeof(t_token));
-	!token ? handle_error(ERR_MALLOC) : 0;
-	token->s = NULL;
-	token->type = lex_type;
-	node = t_dlist_node_new(token, sizeof(t_token));
-	t_dlist_append(dlist, node);
-}
-*/
-
-void		print_token(t_buffer *token)
-{
-	if (token->s)
-		ft_printf("token:%s\n", token->s);
+	char	*space_pos;
+	
+	char	*cmd;
+	char	*args;
+	space_pos = ft_strchr(*s, ' ');
+	if (!space_pos)
+		cmd = *s;
 	else
 	{
-		ft_printf("Uninitiated string:%s\n", token->s);
-	}
-	
-}
-
-void		print_command(t_dlist *cmd)
-{
-	t_dlist_node *temp;
-
-	ft_printf("==== command start ====\n");
-	temp = cmd->head;
-	while (temp)
-	{
-		print_token((t_buffer *)temp->data);
-		temp = temp->next;
-	}
-	ft_printf("===== command end =====\n");
-}
-
-void		print_commands(t_shell *shell)
-{
-	t_dlist_node *temp;
-
-	temp = shell->input->cmd->head;
-	while (temp)
-	{
-		print_command(temp->data);
-		temp = temp->next;
+		cmd = ft_strndup(s, space_pos - *s);
+		args = ft_strdup(s + 1);
 	}
 }
 
-void		free_token(t_dlist_node *token)
+int			exec_implemented_commands(t_shell *shell, char *s)
 {
-	t_buffer	*buffer;
-	
-	
-
-	buffer = token->data;
-	t_buffer_free(&buffer);
-	ft_printf("%d\n", 10);
-	//exit(0);
+	ft_strequ("exit", s) ? do_exit() : 0;
+	if (ft_strequ(s, "env") || ft_strequ(s, "setenv ") ||
+	ft_strequ(s, "unsetenv "))
+		return (do_environ(shell, s));
+	if (ft_strequ(s, "echo") && ft_printf("%s\n", s))
+		return (1);
+	if (ft_strequ(s, "echo ") && do_echo(s))
+		return (1);
+	if ((ft_strequ(s, "cd") || ft_strnequ(s, "cd ", 3)) && do_cd(shell, s))
+		return (1);
+	return (0);
 }
 
-void		free_cmd(t_dlist *cmd)
+void		handle_input(char **s)
 {
-	t_dlist_node	*temp;
-	t_dlist_node	*temp_next;
+	char	*temp;
 
-	temp = cmd->head;
-	while (temp)
-	{
-		temp_next = temp->next;
-		t_dlist_free((t_dlist *)&temp->data, &free_token);
-		t_dlist_pop(cmd, temp);
-		temp = temp_next;
-	}
-	
-}
-
-void		clean_commands(t_shell *shell)
-{
-	t_dlist_node	*temp;
-	t_dlist_node	*temp_next;
-	t_dlist			*commands;
-
-	commands = shell->input->cmd;
-	temp = commands->head;
-	while (temp)
-	{
-		temp_next = temp->next;
-		free_cmd(temp->data);
-		t_dlist_pop(commands, temp);
-		temp = temp_next;
-	}
+	temp = *s;
+	*s = ft_strtrim(*s);
+	free(temp);
 }
 
 int			main(int argc, char **argv, char **env)
 {
 	char	*s;
 	t_shell	*shell;
-
+	char	*splitted;
+	int		i;
 	
 	(void)argv;
 	argc > 1 ? exit(0) : 0;
 	shell = t_shell_new();
 
 	s = shell->input->buf->s;
-	signal (SIGINT, &interrupt);
+	signal (SIGINT, &interrupt); //в функции interrupt надо убить форк запущенного процесса
 	parse_system_environ(shell, env);
-	while (print_entry(shell))
+	while (ft_printf("$> ") && get_next_line(STDIN_FILENO, &s))
 	{
-		
-		handle_input(shell);
-		//ft_printf("%d\n", shell->input->buf->i);
-		//ft_printf("%d\n", shell->input->buf->s[0]);
-		//ft_printf("%d\n", shell->input->buf->s[1]);
-		//ft_printf("%d\n", shell->input->buf->s[2]);
-		ft_printf("%d %s len: %d\n", shell->input->buf->s[0], s, shell->input->buf->i);
-		//ft_printf("%d\n", !is_empty_string(s));
-		
-		
-		if (!is_empty_string(s))
+		handle_input(s);
+		i = 0;
+		splitted = ft_strsplit(s, ';');
+		while (splitted[i])
 		{
-			if (is_quote_bs_status(shell->input->status))
-				continue ;
-			//ft_printf("%s\n", s);
-			ft_strnequ(s, "exit", 4) ? do_exit() : 0;
-			create_tokens(shell, s);
-			ft_printf("%d\n", shell->input->cmd->size);
-			//ft_printf("%d %s\n", shell->input->buf->i, s);	
-			print_commands(shell);
-			ft_printf("%d\n", shell->input->cmd->size);
-			clean_commands(shell);
-			
-			init_cmd(shell->input->cmd);
-			
-			//parser();
-			//executor();
-			/*
-			if (!exec_implemented_commands(shell, s))
-			{
-				exec_prog(splitted = ft_strsplit(s, ' '), get_environ(shell));
-				free_2dchararr_terminated(splitted);
-			}
-			*/
+			handle_command(splitted[i++]);
 		}
-		
-		t_buffer_clean(shell->input->buf);
+		free_2dchararr_terminated(splitted);
+		free(s);
 	}
-	exit(0);
 	return (0);
 }

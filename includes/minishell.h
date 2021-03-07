@@ -57,10 +57,19 @@ typedef struct	s_token
 }				t_token;
 */
 
+typedef struct	s_curr_cmd
+{
+	char		*cmd;
+	char		*args;
+}				t_curr_cmd;
+
+
+
 typedef struct	s_shell
 {
 	t_input		*input;
 	t_htable	*env;
+	t_curr_cmd	curr_cmd;
 }				t_shell;
 
 /*
