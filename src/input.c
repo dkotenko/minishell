@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/02/06 23:57:53 by clala            ###   ########.fr       */
+/*   Updated: 2021/03/07 19:24:38 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ void		init_cmd(t_dlist *cmd)
 	tokens = t_dlist_new();
 	
 	t_dlist_append(cmd, t_dlist_node_new(tokens, sizeof(t_dlist *)));
-	ft_printf("%d\n", cmd->size);
 	t_dlist_append(tokens, t_dlist_node_new(t_buffer_create(0), sizeof(t_buf *)));
 }
 
@@ -36,11 +35,10 @@ t_input		*t_input_new(void)
 	new->cmd = t_dlist_new();
 	new->buf = t_buffer_create(0);
 	init_cmd(new->cmd);
-	
 	return (new);
 }
 
-
+/*
 void				handle_input(t_shell *shell)
 {
 	char			c;   
@@ -63,3 +61,4 @@ void				handle_input(t_shell *shell)
 	//ft_printf("%s\n", shell->input->buf->s);
 	tcsetattr( STDIN_FILENO, TCSANOW, &oldt);
 }
+*/

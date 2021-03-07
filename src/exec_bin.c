@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putchar_fd.c                                    :+:      :+:    :+:   */
+/*   exec_bin.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2020/02/15 21:53:21 by clala            ###   ########.fr       */
+/*   Updated: 2021/03/07 20:23:49 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,17 +56,19 @@ int exec_prog(char **argv, char **env)
  	return 0;
 }
 
-int			exec_implemented_commands(t_shell *shell, char *s)
+int			exec_implemented_commands(t_shell *shell)
 {
-	ft_strequ("exit", s) ? do_exit() : 0;
-	if (ft_strequ(s, "env") || ft_strequ(s, "setenv ") ||
-	ft_strequ(s, "unsetenv "))
-		return (do_environ(shell, s));
-	if (ft_strequ(s, "echo") && ft_printf("%s\n", s))
+	char	*s;
+
+	s = shell->cmd.cmd;
+	if (ft_strequ("exit", s))
+		exit(0);
+	if ((ft_strequ(s, "env") || ft_strequ(s, "setenv") ||
+	ft_strequ(s, "unsetenv")) && do_environ(shell))
 		return (1);
-	if (ft_strequ(s, "echo ") && do_echo(s))
+	if (ft_strequ(s, "echo") && do_echo(shell->cmd))
 		return (1);
-	if ((ft_strequ(s, "cd") || ft_strnequ(s, "cd ", 3)) && do_cd(shell, s))
+	if (ft_strequ(s, "cd") && do_cd(shell, s))
 		return (1);
 	return (0);
 }
@@ -76,18 +78,10 @@ void 	exec_bin()
  	;
 }
 
-int			do_exit()
-{	
-	//kill(getppid(), SIGKILL); // close terminal
-	exit(0);
-}
-
-int			do_echo(char *s)
+int			do_echo(t_curr_cmd cmd)
 {
-	char	**splitted;
-
-	splitted = ft_strsplit(s, ' ');
-	ft_printf("%s\n", splitted[1]);
-	free_2dchararr_terminated(splitted);
+	if (cmd.args)
+		ft_printf("%s");
+	ft_putchar('\n');
 	return (1);
 }

@@ -1,25 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putchar_fd.c                                    :+:      :+:    :+:   */
+/*   environ.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2020/02/15 21:53:21 by clala            ###   ########.fr       */
+/*   Updated: 2021/03/07 20:41:15 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void		unset_env(t_shell *shell, char *key)
-{
-	t_htable_remove(shell->env, key);
-}
-
 int			set_env(t_shell *shell, char *key, char *value)
 {
 	return (t_htable_set(shell->env, key, value));
+}
+
+void		do_setenv(t_shell *shell)
+{
+	char	**key_val;
+
+	if (!shell->cmd.args)
+	{
+		ft_printf("setenv: %s\n", NOT_ENOUGH_ARGS);
+		return;
+	}
+	key_val = ft_strsplit(shell->cmd.args, '=');
+	t_htable_set(shell->env,
+	key_val[T_HTABLE_KEY], key_val[T_HTABLE_VALUE]);
+	free_2dchararr_terminated(key_val);
 }
 
 char		*get_env(t_shell *shell, char *key)
@@ -72,12 +82,16 @@ void		parse_system_environ(t_shell *shell, char **env)
 }
 
 
-void		do_env(t_shell *shell, char *s)
+void		do_env(t_shell *shell)
 {
 	int		i;
 	char	**environ;
 
-	(void)s;
+	if (shell->cmd.args)
+	{
+		ft_printf("env: %s: %s\n", NO_SUCH_FILE, shell->cmd.args);
+		return ;
+	}
 	environ = get_environ(shell);
 	i = -1;
 	while (++i < shell->env->counter)
@@ -87,27 +101,20 @@ void		do_env(t_shell *shell, char *s)
 	free_2dchararr_terminated(environ);
 }
 
-int			do_environ(t_shell *shell, char *s)
-{	
-	char	**splitted;
-	char	**key_val;
-
-	if (ft_strequ(s, "env"))
-		do_env(shell, s);
-	else if (ft_strequ(s, "setenv "))
+int			do_environ(t_shell *shell)
+{
+	if (ft_strequ(shell->cmd.cmd, "env"))
+		do_env(shell);
+	else if (ft_strequ(shell->cmd.cmd, "setenv"))
+		do_setenv(shell);
+	else if (ft_strequ(shell->cmd.cmd, "unsetenv"))
 	{
-		splitted = ft_strsplit(s, ' ');
-		key_val = ft_strsplit(splitted[1], '=');
-		t_htable_set(shell->env,
-		key_val[T_HTABLE_KEY], key_val[T_HTABLE_VALUE]);
-		free_2dchararr_terminated(key_val);
-		free_2dchararr_terminated(splitted);
-	}
-	else if (ft_strequ(s, "unsetenv "))
-	{
-		splitted = ft_strsplit(s, ' ');
-		t_htable_remove(shell->env, splitted[1]);
-		free_2dchararr_terminated(splitted);
+		if (!shell->cmd.args)
+		{
+			ft_printf("unsetenv: %s\n", NOT_ENOUGH_ARGS);
+			return (1);
+		}
+		t_htable_remove(shell->env, shell->cmd.args);
 	}
 	return (1);
 }

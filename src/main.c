@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/02/10 19:31:07 by clala            ###   ########.fr       */
+/*   Updated: 2021/03/07 19:45:33 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,35 +23,21 @@ t_shell		*t_shell_new(void)
 	return (new);
 }
 
-void		separate_cmd_args(char *s)
+void		separate_cmd_args(t_shell *shell, char *s)
 {
+	t_curr_cmd	cmd;
 	char	*space_pos;
-	
-	char	*cmd;
-	char	*args;
-	space_pos = ft_strchr(*s, ' ');
+
+	space_pos = ft_strchr(s, ' ');
+	ft_bzero(&cmd, sizeof(t_curr_cmd));
 	if (!space_pos)
-		cmd = *s;
+		cmd.cmd = s;
 	else
 	{
-		cmd = ft_strndup(s, space_pos - *s);
-		args = ft_strdup(s + 1);
+		cmd.cmd = ft_strndup(s, space_pos - s);
+		cmd.args = ft_strdup(space_pos + 1);
 	}
-}
-
-int			exec_implemented_commands(t_shell *shell, char *s)
-{
-	ft_strequ("exit", s) ? do_exit() : 0;
-	if (ft_strequ(s, "env") || ft_strequ(s, "setenv ") ||
-	ft_strequ(s, "unsetenv "))
-		return (do_environ(shell, s));
-	if (ft_strequ(s, "echo") && ft_printf("%s\n", s))
-		return (1);
-	if (ft_strequ(s, "echo ") && do_echo(s))
-		return (1);
-	if ((ft_strequ(s, "cd") || ft_strnequ(s, "cd ", 3)) && do_cd(shell, s))
-		return (1);
-	return (0);
+	shell->cmd = cmd;
 }
 
 void		handle_input(char **s)
@@ -63,30 +49,32 @@ void		handle_input(char **s)
 	free(temp);
 }
 
+
 int			main(int argc, char **argv, char **env)
 {
 	char	*s;
 	t_shell	*shell;
-	char	*splitted;
+	char	**splitted;
 	int		i;
 	
 	(void)argv;
 	argc > 1 ? exit(0) : 0;
 	shell = t_shell_new();
-
 	s = shell->input->buf->s;
 	signal (SIGINT, &interrupt); //в функции interrupt надо убить форк запущенного процесса
 	parse_system_environ(shell, env);
 	while (ft_printf("$> ") && get_next_line(STDIN_FILENO, &s))
 	{
-		handle_input(s);
+		handle_input(&s);
 		i = 0;
 		splitted = ft_strsplit(s, ';');
 		while (splitted[i])
 		{
-			handle_command(splitted[i++]);
+			separate_cmd_args(shell, splitted[i++]);
+			//ft_printf("%s ||| %s\n", shell->curr_cmd.cmd, shell->curr_cmd.args);
+			exec_implemented_commands(shell);
 		}
-		free_2dchararr_terminated(splitted);
+		splitted ? free_2dchararr_terminated(splitted) : 0;
 		free(s);
 	}
 	return (0);

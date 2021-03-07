@@ -6,7 +6,7 @@
 #    By: clala <clala@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/15 16:58:46 by clala             #+#    #+#              #
-#    Updated: 2021/01/28 19:51:45 by clala            ###   ########.fr        #
+#    Updated: 2021/03/07 19:54:55 by clala            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,12 +41,12 @@ FLAGS = -Wall -Wextra -Werror #-g -fsanitize=address
 all: $(LIBFT) $(OBJDIR) $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT)
-	$(CC) $(FLAGS) $(OBJS) -o $@ -L $(LIBFT_DIR) -lft
+	$(CC) $(FLAGS) $(OBJS) -o $@ $(LIBFT)
 
 $(LIBFT): lib
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(INCLUDES) | $(OBJDIR)
-	$(CC) $(FLAGS) -I./$(INCLUDES_DIR) -I./$(LIBFT_DIR)/includes -c $< -o $@ 
+	$(CC) $(FLAGS) -c $< -o $@ -I./$(INCLUDES_DIR) -I./$(LIBFT_DIR)/includes 
 
 $(OBJDIR):
 	/bin/mkdir -p $(OBJDIR)

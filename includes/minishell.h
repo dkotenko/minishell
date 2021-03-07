@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/02/10 19:10:22 by clala            ###   ########.fr       */
+/*   Updated: 2021/03/07 20:25:24 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 # include "ft_printf.h"
 # include "error.h"
 # include "const.h"
+# include "msg.h"
 
 typedef struct	s_quote
 {
@@ -69,7 +70,7 @@ typedef struct	s_shell
 {
 	t_input		*input;
 	t_htable	*env;
-	t_curr_cmd	curr_cmd;
+	t_curr_cmd	cmd;
 }				t_shell;
 
 /*
@@ -78,7 +79,8 @@ typedef struct	s_shell
 void			exec_bin();
 int 			exec_prog(char **argv, char **env);
 int				do_exit();
-int				do_echo(char *s);
+int				do_echo(t_curr_cmd cmd);
+int			exec_implemented_commands(t_shell *shell);
 
 /*
 ** quotation.c
@@ -103,8 +105,8 @@ int				is_cd_command(char *s);
 ** environ.c
 */
 void			parse_system_environ(t_shell *shell, char **env);
-int				do_environ(t_shell *shell, char *s);
-void			do_env(t_shell *shell, char *s);
+int				do_environ(t_shell *shell);
+void			do_env(t_shell *shell);
 void			unset_env(t_shell *shell, char *key);
 int				set_env(t_shell *shell, char *key, char *value);
 char			*get_env(t_shell *shell, char *key);
@@ -117,7 +119,7 @@ void			quote_tokenizer(char *s, t_quote *q, t_dlist *list);
 /*
 ** input.c
 */
-void			handle_input(t_shell *shell);
+//void			handle_input(t_shell *shell);
 void			interrupt(int a);
 t_input			*t_input_new(void);
 
