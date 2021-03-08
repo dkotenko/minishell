@@ -19,6 +19,7 @@ ALL_C =	main.c \
 		signals.c \
 		handle_status.c \
 		handle_status_aux.c \
+		environ_short.c
 
 SRCDIR = ./src
 OBJDIR = ./objs

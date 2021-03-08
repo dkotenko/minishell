@@ -31,12 +31,14 @@ void		separate_cmd_args(t_shell *shell, char *s)
 	space_pos = ft_strchr(s, ' ');
 	ft_bzero(&cmd, sizeof(t_curr_cmd));
 	if (!space_pos)
-		cmd.cmd = s;
+		cmd.cmd = ft_strdup(s);
 	else
 	{
 		cmd.cmd = ft_strndup(s, space_pos - s);
 		cmd.args = ft_strdup(space_pos + 1);
 	}
+	shell->cmd.args ? free(shell->cmd.args) : 0;
+	shell->cmd.cmd ? free(shell->cmd.cmd) : 0;
 	shell->cmd = cmd;
 }
 
@@ -65,13 +67,15 @@ int			main(int argc, char **argv, char **env)
 	parse_system_environ(shell, env);
 	while (ft_printf("$> ") && get_next_line(STDIN_FILENO, &s))
 	{
-		handle_input(&s);
+		if (!ft_strlen(s) && ft_free_int(s))
+			continue ;
 		i = 0;
 		splitted = ft_strsplit(s, ';');
 		while (splitted[i])
 		{
+			handle_input(&splitted[i]);
 			separate_cmd_args(shell, splitted[i++]);
-			//ft_printf("%s ||| %s\n", shell->curr_cmd.cmd, shell->curr_cmd.args);
+			//ft_printf("%s ||| %s\n", shell->cmd.cmd, shell->cmd.args);
 			exec_implemented_commands(shell);
 		}
 		splitted ? free_2dchararr_terminated(splitted) : 0;

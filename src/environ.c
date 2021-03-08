@@ -12,29 +12,33 @@
 
 #include "minishell.h"
 
-int			set_env(t_shell *shell, char *key, char *value)
-{
-	return (t_htable_set(shell->env, key, value));
-}
-
 void		do_setenv(t_shell *shell)
 {
 	char	**key_val;
+	char	*n1;
+	char	*n2;
 
-	if (!shell->cmd.args)
+	if (!shell->cmd.args || !ft_strchr(shell->cmd.args, '='))
 	{
-		ft_printf("setenv: %s\n", NOT_ENOUGH_ARGS);
+		ft_printf("setenv: %s\n", MSG_NOT_ENOUGH_ARGS);
 		return;
 	}
 	key_val = ft_strsplit(shell->cmd.args, '=');
+	n1 = ft_strchr(key_val[T_HTABLE_KEY], ' ');
+	n2 = ft_strchr(key_val[T_HTABLE_VALUE], ' ');
+	if (n1 || n2)
+	{
+		if (n1 && n2)
+			ft_printf("%s: %s\n", SHELL_NAME, MSG_BAD_ASSIG);
+		else if (n1)
+			ft_printf("%s: %s not found\n", SHELL_NAME, key_val[T_HTABLE_KEY]);
+		ft_printf("%s: %s: \n", SHELL_NAME, MSG_NOT_AN_IDENT, key_val[T_HTABLE_KEY]);
+		free_2dchararr_terminated(key_val);
+		return ;
+	}
 	t_htable_set(shell->env,
-	key_val[T_HTABLE_KEY], key_val[T_HTABLE_VALUE]);
+	key_val[T_HTABLE_KEY], ft_strdup(key_val[T_HTABLE_VALUE]));
 	free_2dchararr_terminated(key_val);
-}
-
-char		*get_env(t_shell *shell, char *key)
-{
-	return (t_htable_get(shell->env, key));
 }
 
 char		**get_environ(t_shell *shell)
@@ -74,7 +78,10 @@ void		parse_system_environ(t_shell *shell, char **env)
 	{
 		splitted = ft_strsplit(env[i], '=');
 		key = ft_strdup(splitted[0]);
-		value = ft_strdup(splitted[1]);
+		if (len_2dchararr_terminated(splitted) > 1)
+			value = ft_strdup(splitted[1]);
+		else
+			value = ft_strdup("");
 		t_htable_add(&shell->env, key, value);
 		free_2dchararr_terminated(splitted);
 		i++;
@@ -89,7 +96,7 @@ void		do_env(t_shell *shell)
 
 	if (shell->cmd.args)
 	{
-		ft_printf("env: %s: %s\n", NO_SUCH_FILE, shell->cmd.args);
+		ft_printf("env: %s: %s\n", MSG_NO_SUCH_FILE, shell->cmd.args);
 		return ;
 	}
 	environ = get_environ(shell);
@@ -111,7 +118,7 @@ int			do_environ(t_shell *shell)
 	{
 		if (!shell->cmd.args)
 		{
-			ft_printf("unsetenv: %s\n", NOT_ENOUGH_ARGS);
+			ft_printf("unsetenv: %s\n", MSG_NOT_ENOUGH_ARGS);
 			return (1);
 		}
 		t_htable_remove(shell->env, shell->cmd.args);
