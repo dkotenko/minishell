@@ -12,12 +12,27 @@
 
 #include "minishell.h"
 
-int				ft_putenv(char *s)
+t_dlist_node		*was_allocated(t_dlist *allocated, void *address)
+{
+	t_dlist_node	*temp;
+
+	temp = allocated->head;
+	while (temp)
+	{
+		if (address == temp->data)
+			break;
+		temp = temp->next;
+	}
+	return (temp);
+}
+
+int				ft_putenv(t_dlist *allocated, char *s)
 {
 	extern char	**environ;
 	char		*equal_sign;
 	int			environ_len;
 	char		**new_env;
+	t_dlist_node	*node;
 
 	equal_sign = ft_strchr(s, '=');
   	if (equal_sign == NULL)
@@ -26,7 +41,12 @@ int				ft_putenv(char *s)
 	new_env = (char **)ft_memalloc(sizeof(char *) * (environ_len + 1 + 1));
 	ft_memcpy(new_env, environ, environ_len * sizeof(char *));
 	new_env[environ_len] = s;
-	//free(environ);
+	if ((node = was_allocated(allocated, environ)))
+	{
+		free(node->data);
+		t_dlist_remove_node(allocated, node);
+	}
+	t_dlist_append(allocated, t_dlist_node_new(new_env, sizeof(char **)));
 	environ = new_env;
 	return 0;
 }
@@ -49,12 +69,13 @@ char			*ft_getenv(const char *name)
 	return (NULL);
 }
 
-int				ft_unsetenv(const char *name)
+int				ft_unsetenv(t_dlist *allocated, const char *name)
 {
     extern char	**environ;
 	int			i;
 	int			j;
 	int			len;
+	t_dlist_node	*node;
 
     if (name == NULL || name[0] == '\0' || strchr(name, '=') != NULL)
 	{
@@ -69,8 +90,11 @@ int				ft_unsetenv(const char *name)
         if (!ft_strncmp(environ[i], name, len) && environ[i][len] == '=')
 		{
 			j = i;
-			ft_printf("%s\n", environ[i]);
-			//free(environ[i]);
+			if ((node = was_allocated(allocated, environ[i])))
+			{
+				free(node->data);
+				t_dlist_remove_node(allocated, node);
+			}
 			while (environ[j])
 			{
 				environ[j] = environ[j + 1];
@@ -83,7 +107,7 @@ int				ft_unsetenv(const char *name)
     return 0;
 }
 
-int ft_setenv(const char *name, const char *value, int overwrite)
+int ft_setenv(const char *name, const char *value, int overwrite, t_dlist *allocated)
 {
     char *es;
 
@@ -95,12 +119,12 @@ int ft_setenv(const char *name, const char *value, int overwrite)
     }
     if (ft_getenv(name) != NULL && overwrite == 0)
         return 0;
-    ft_unsetenv(name);
+    ft_unsetenv(allocated, name);
     es = ft_strnew(ft_strlen(name) + 1 + ft_strlen(value));
     ft_strcpy(es, name);
     ft_strcat(es, "=");
     ft_strcat(es, value);
-    return (ft_putenv(es) != 0) ? -1 : 0;
+    return (ft_putenv(allocated, es) != 0) ? -1 : 0;
 }
 
 int			is_valid_setenv_args(char *s)
@@ -156,7 +180,7 @@ void		do_setenv(t_shell *shell)
 		free_2dchararr_terminated(key_val);
 		return ;
 	}
-	ft_setenv(key_val[T_HTABLE_KEY], key_val[T_HTABLE_VALUE], 1);
+	ft_setenv(key_val[T_HTABLE_KEY], key_val[T_HTABLE_VALUE], 1, shell->allocated);
 	free_2dchararr_terminated(key_val);
 }
 
@@ -182,6 +206,6 @@ int			do_environ(t_shell *shell)
 	else if (ft_strequ(shell->cmd.cmd, "setenv"))
 		do_setenv(shell);
 	else if (ft_strequ(shell->cmd.cmd, "unsetenv"))
-		ft_unsetenv(shell->cmd.args);
+		ft_unsetenv(shell->allocated, shell->cmd.args);
 	return (1);
 }

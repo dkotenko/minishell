@@ -71,6 +71,7 @@ typedef struct	s_shell
 	t_input		*input;
 	t_htable	*env;
 	t_curr_cmd	cmd;
+	t_dlist		*allocated;
 }				t_shell;
 
 /*
@@ -112,10 +113,10 @@ int				set_env(t_shell *shell, char *key, char *value);
 char			*get_env(t_shell *shell, char *key);
 //char			**get_environ(t_shell *shell);
 
-int				ft_putenv(char *s);
+int				ft_putenv(t_dlist *allocated, char *s);
 char			*ft_getenv(const char *name);
-int				ft_unsetenv(const char *name);
-int				ft_setenv(const char *name, const char *value, int overwrite);
+int				ft_unsetenv(t_dlist *allocated, const char *name);
+int ft_setenv(const char *name, const char *value, int overwrite, t_dlist *allocated);
 
 void			quote_tokenizer(char *s, t_quote *q, t_dlist *list);
 

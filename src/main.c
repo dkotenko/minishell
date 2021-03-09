@@ -20,6 +20,7 @@ t_shell		*t_shell_new(void)
 	new->env = t_htable_init(
 		T_HTABLE_INIT_PRIME_NUMBER, &cmp_func, &hash_func_fnv_1a_32);
 	new->input = t_input_new();
+	new->allocated = t_dlist_new();
 	return (new);
 }
 
