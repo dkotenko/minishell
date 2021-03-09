@@ -11,6 +11,7 @@
 		"utility": "c",
 		"vector": "c",
 		"cstdio": "cpp",
-		"t_htable.h": "c"
+		"t_htable.h": "c",
+		"cstdlib": "cpp"
 	}
 }

@@ -14,17 +14,25 @@
 
 void 	print_error_bin(char *s)
 {
- 	ft_printf("minishell: command not found: %s\n", s);
+ 	ft_printf("%s: %s: %s\n", SHELL_NAME, MSG_CMD_NOT_FOUND, s);
 }
 
 int exec_prog(char **argv, char **env)
 {
  	pid_t   my_pid;
  	int 	 status, timeout /* unused ifdef WAIT_FOR_COMPLETION */;
+	int res;
 
- 	if (0 == (my_pid = fork()))
+	res = -22;
+	ft_printf("%d\n", res);
+	my_pid = fork();
+	ft_printf("%d\n", my_pid);
+ 	if (-1 < my_pid)
  	{
- 	 	if (-1 == execve(argv[0], argv , env))
+		ft_printf("%s\n", argv[1]);
+		res = execve(argv[1], argv , env);
+		ft_printf("%d\n", res);
+ 	 	if (-1 == res)
  	 	{
 			kill(my_pid, SIGTERM);
 			print_error_bin(argv[0]);
@@ -56,20 +64,22 @@ int exec_prog(char **argv, char **env)
  	return 0;
 }
 
-int			exec_implemented_commands(t_shell *shell)
+int				exec_command(t_shell *shell, char **argv, char **env)
 {
 	char	*s;
 
 	s = shell->cmd.cmd;
 	if (ft_strequ("exit", s))
 		exit(0);
-	if ((ft_strequ(s, "env") || ft_strequ(s, "setenv") ||
-	ft_strequ(s, "unsetenv")) && do_environ(shell))
-		return (1);
-	if (ft_strequ(s, "echo") && do_echo(shell->cmd))
-		return (1);
-	if (ft_strequ(s, "cd") && do_cd(shell, s))
-		return (1);
+	if ((ft_strequ(s, "env") || ft_strequ(s, "setenv") || 
+	ft_strequ(s, "unsetenv")))
+		do_environ(shell);
+	else if (ft_strequ(s, "echo"))
+		do_echo(shell->cmd);
+	else if (ft_strequ(s, "cd"))
+		do_cd(shell, s);
+	else
+		exec_prog(argv, env);
 	return (0);
 }
 

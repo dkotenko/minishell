@@ -80,7 +80,7 @@ void			exec_bin();
 int 			exec_prog(char **argv, char **env);
 int				do_exit();
 int				do_echo(t_curr_cmd cmd);
-int			exec_implemented_commands(t_shell *shell);
+int				exec_command(t_shell *shell, char **argv, char **env);
 
 /*
 ** quotation.c
@@ -104,14 +104,18 @@ int				is_cd_command(char *s);
 /*
 ** environ.c
 */
-void			parse_system_environ(t_shell *shell, char **env);
+
 int				do_environ(t_shell *shell);
 void			do_env(t_shell *shell);
 void			unset_env(t_shell *shell, char *key);
 int				set_env(t_shell *shell, char *key, char *value);
 char			*get_env(t_shell *shell, char *key);
-char			**get_environ(t_shell *shell);
+//char			**get_environ(t_shell *shell);
 
+int				ft_putenv(char *s);
+char			*ft_getenv(const char *name);
+int				ft_unsetenv(const char *name);
+int				ft_setenv(const char *name, const char *value, int overwrite);
 
 void			quote_tokenizer(char *s, t_quote *q, t_dlist *list);
 

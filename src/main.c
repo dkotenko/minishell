@@ -27,6 +27,7 @@ void		separate_cmd_args(t_shell *shell, char *s)
 {
 	t_curr_cmd	cmd;
 	char	*space_pos;
+	char	*temp;
 
 	space_pos = ft_strchr(s, ' ');
 	ft_bzero(&cmd, sizeof(t_curr_cmd));
@@ -34,8 +35,10 @@ void		separate_cmd_args(t_shell *shell, char *s)
 		cmd.cmd = ft_strdup(s);
 	else
 	{
-		cmd.cmd = ft_strndup(s, space_pos - s);
-		cmd.args = ft_strdup(space_pos + 1);
+		temp = ft_strndup(s, space_pos - s);
+		cmd.cmd = ft_strtrim(temp);
+		free(temp);
+		cmd.args = ft_strtrim(space_pos + 1);
 	}
 	shell->cmd.args ? free(shell->cmd.args) : 0;
 	shell->cmd.cmd ? free(shell->cmd.cmd) : 0;
@@ -64,7 +67,7 @@ int			main(int argc, char **argv, char **env)
 	shell = t_shell_new();
 	s = shell->input->buf->s;
 	signal (SIGINT, &interrupt); //в функции interrupt надо убить форк запущенного процесса
-	parse_system_environ(shell, env);
+	//parse_system_environ(shell, env);
 	while (ft_printf("$> ") && get_next_line(STDIN_FILENO, &s))
 	{
 		if (!ft_strlen(s) && ft_free_int(s))
@@ -76,7 +79,7 @@ int			main(int argc, char **argv, char **env)
 			handle_input(&splitted[i]);
 			separate_cmd_args(shell, splitted[i++]);
 			//ft_printf("%s ||| %s\n", shell->cmd.cmd, shell->cmd.args);
-			exec_implemented_commands(shell);
+			exec_command(shell, argv, env);
 		}
 		splitted ? free_2dchararr_terminated(splitted) : 0;
 		free(s);
