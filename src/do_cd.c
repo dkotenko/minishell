@@ -156,6 +156,7 @@ char		*create_relative_path(t_shell *shell, char *path)
 	return (relative);
 }
 
+//cd - or cd ~- or cd $OLD_PWD
 char		*create_path(t_shell *shell, char *s)
 {
 	char	*path;

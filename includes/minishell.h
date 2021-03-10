@@ -128,6 +128,8 @@ void			quote_tokenizer(char *s, t_quote *q, t_dlist *list);
 //void			handle_input(t_shell *shell);
 void			interrupt(int a);
 t_input			*t_input_new(void);
+void		handle_input(char **s);
+void		replace_env_variables(char **s);
 
 /*
 **handle_status.c

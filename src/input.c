@@ -38,6 +38,51 @@ t_input		*t_input_new(void)
 	return (new);
 }
 
+void		do_trim(char **s)
+{
+	char	*temp;
+
+	temp = *s;
+	*s = ft_strtrim(*s);
+	free(temp);
+}
+
+void		replace_env_variables(char **s)
+{
+	char	*dollar_pos;
+	int		i;
+	char	*var_name;
+	char	*value;
+	char	*temp;
+
+	dollar_pos = *s;
+	while (*s && (dollar_pos = ft_strchr(dollar_pos, '$')))
+	{
+		i = dollar_pos - *s;
+		
+		while ((*s)[i + 1] && !is_space_tab((*s)[i + 1]))
+			i++;
+		if (i == dollar_pos - *s)
+			break ;
+		var_name = ft_strndup(dollar_pos, i - (dollar_pos - *s) + 1);
+		value = ft_getenv(var_name + 1);
+		temp = *s;
+		*s = ft_strreplace(*s, var_name, value);
+		free(temp);
+		free(var_name);
+		dollar_pos++;
+		//получить имя переменной
+		//найти имя в env, вернуть значение, если нет - вернуть """
+		//заменить доллар + имя на значение
+	}
+}
+
+void		handle_input(char **s)
+{
+	do_trim(s);
+	replace_env_variables(s);
+}
+
 /*
 void				handle_input(t_shell *shell)
 {

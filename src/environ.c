@@ -61,10 +61,10 @@ char			*ft_getenv(const char *name)
 		return (NULL);
 	len = ft_strlen(name);
 	i = -1;
-	while (++i)
+	while (environ[++i])
 	{
 		if (!ft_strncmp(environ[i], name, len) && environ[i][len] == '=')
-			return (environ[i]);
+			return (environ[i] + len + 1);
 	}
 	return (NULL);
 }

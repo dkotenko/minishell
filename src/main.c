@@ -46,14 +46,7 @@ void		separate_cmd_args(t_shell *shell, char *s)
 	shell->cmd = cmd;
 }
 
-void		handle_input(char **s)
-{
-	char	*temp;
 
-	temp = *s;
-	*s = ft_strtrim(*s);
-	free(temp);
-}
 
 
 int			main(int argc, char **argv)
