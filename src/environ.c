@@ -26,13 +26,23 @@ t_dlist_node		*was_allocated(t_dlist *allocated, void *address)
 	return (temp);
 }
 
+void			remove_if_allocated(t_dlist *allocated, void *data)
+{
+	t_dlist_node	*node;
+
+	if ((node = was_allocated(allocated, data)))
+	{
+		free(node->data);
+		t_dlist_remove_node(allocated, node);
+	}
+}
+
 int				ft_putenv(t_dlist *allocated, char *s)
 {
 	extern char	**environ;
 	char		*equal_sign;
 	int			environ_len;
 	char		**new_env;
-	t_dlist_node	*node;
 
 	equal_sign = ft_strchr(s, '=');
   	if (equal_sign == NULL)
@@ -41,11 +51,7 @@ int				ft_putenv(t_dlist *allocated, char *s)
 	new_env = (char **)ft_memalloc(sizeof(char *) * (environ_len + 1 + 1));
 	ft_memcpy(new_env, environ, environ_len * sizeof(char *));
 	new_env[environ_len] = s;
-	if ((node = was_allocated(allocated, environ)))
-	{
-		free(node->data);
-		t_dlist_remove_node(allocated, node);
-	}
+	remove_if_allocated(allocated, environ);
 	t_dlist_append(allocated, t_dlist_node_new(new_env, sizeof(char **)));
 	environ = new_env;
 	return 0;
@@ -75,7 +81,6 @@ int				ft_unsetenv(t_dlist *allocated, const char *name)
 	int			i;
 	int			j;
 	int			len;
-	t_dlist_node	*node;
 
     if (name == NULL || name[0] == '\0' || strchr(name, '=') != NULL)
 	{
@@ -90,11 +95,7 @@ int				ft_unsetenv(t_dlist *allocated, const char *name)
         if (!ft_strncmp(environ[i], name, len) && environ[i][len] == '=')
 		{
 			j = i;
-			if ((node = was_allocated(allocated, environ[i])))
-			{
-				free(node->data);
-				t_dlist_remove_node(allocated, node);
-			}
+			remove_if_allocated(allocated, environ[i]);
 			while (environ[j])
 			{
 				environ[j] = environ[j + 1];

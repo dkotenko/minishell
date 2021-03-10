@@ -45,10 +45,16 @@ void		separate_cmd_args(t_shell *shell, char *s)
 	shell->cmd.cmd ? free(shell->cmd.cmd) : 0;
 	shell->cmd = cmd;
 }
+/*
+$> echo $ffff
+value:
+
+$> echo $d
+sega
+*/
 
 
-
-
+//cd env - sega
 int			main(int argc, char **argv)
 {
 	char	*s;
@@ -70,7 +76,8 @@ int			main(int argc, char **argv)
 		splitted = ft_strsplit(s, ';');
 		while (splitted[i])
 		{
-			handle_input(&splitted[i]);
+			handle_input(shell->allocated, &splitted[i]);
+			
 			separate_cmd_args(shell, splitted[i++]);
 			//ft_printf("%s ||| %s\n", shell->cmd.cmd, shell->cmd.args);
 			

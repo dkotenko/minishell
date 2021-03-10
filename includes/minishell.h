@@ -78,7 +78,7 @@ typedef struct	s_shell
 ** exec_bin.c
 */
 void			exec_bin();
-int 			exec_prog(char **argv, char **env);
+int 			exec_prog(const char* program, const char* arg);
 int				do_exit();
 int				do_echo(t_curr_cmd cmd);
 int				exec_command(t_shell *shell);
@@ -112,6 +112,7 @@ void			do_env(t_shell *shell);
 void			unset_env(t_shell *shell, char *key);
 int				set_env(t_shell *shell, char *key, char *value);
 char			*get_env(t_shell *shell, char *key);
+void			remove_if_allocated(t_dlist *allocated, void *data);
 //char			**get_environ(t_shell *shell);
 
 int				ft_putenv(t_dlist *allocated, char *s);
@@ -128,8 +129,8 @@ void			quote_tokenizer(char *s, t_quote *q, t_dlist *list);
 //void			handle_input(t_shell *shell);
 void			interrupt(int a);
 t_input			*t_input_new(void);
-void		handle_input(char **s);
-void		replace_env_variables(char **s);
+void		handle_input(t_dlist *allocated, char **s);
+void		replace_env_variables(t_dlist *allocated, char **s);
 
 /*
 **handle_status.c
