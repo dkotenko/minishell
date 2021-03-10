@@ -12,9 +12,57 @@
 
 #include "minishell.h"
 
+#include <errno.h>
 void 	print_error_bin(char *s)
 {
  	ft_printf("%s: %s: %s\n", SHELL_NAME, MSG_CMD_NOT_FOUND, s);
+}
+
+static char			**get_argv_from_s(const char* program, const char* arg)
+{
+	char			*temp;
+	char			**splitted;
+
+	temp = ft_strnew(ft_strlen(program) + 1 + ft_strlen(arg));
+	ft_strcpy(temp, program);
+	ft_strcat(temp, " ");
+    ft_strcat(temp, arg);
+	splitted = ft_strsplit(temp, ' ');
+	free(temp);
+	return (splitted);
+}
+
+void run(const char* program, const char* arg)
+{
+    pid_t pid;
+	extern char	**environ;
+	char		**argv;		
+ 
+	pid = fork();
+    if (pid == -1)
+        fprintf(stderr, "Unable to fork\n");
+    else if (pid > 0) {
+        printf("P> I am parent %d\n", getpid());
+        printf("P> Child is %d\n", pid);
+        int status;
+        // wait(&status);
+        waitpid(pid, &status, 0);
+        printf("P> Wait OK\n");
+        if (WIFEXITED(status)) {
+            printf("P> Exit code = %d\n", WEXITSTATUS(status));
+        }
+        printf("\n");
+    } else {
+        // we are the child            
+        printf("C> I am child %d of %d\n", getpid(), getppid());
+		//if (execlp(program, program, arg, NULL) == -1)
+		argv = get_argv_from_s(program, arg);
+        if (execve(program, argv, environ) == -1) {
+            fprintf(stderr, "Unable to exec\n");
+        }
+		free_2dchararr_terminated(argv);
+        _exit(42);
+    }
 }
 
 int exec_prog(char **argv, char **env)
@@ -26,11 +74,13 @@ int exec_prog(char **argv, char **env)
 	res = -22;
 	ft_printf("%d\n", res);
 	my_pid = fork();
-	ft_printf("%d\n", my_pid);
+	char *a[] = {NULL};
+	//char *b[] = {"b", "a", NULL};
+	ft_printf("%d errno\n", errno);
  	if (-1 < my_pid)
  	{
-		ft_printf("%s\n", argv[1]);
-		res = execve(argv[1], argv , env);
+		ft_printf("%s hello!\n", argv[1]);
+		res = execve("/bin/echo", a, NULL);
 		ft_printf("%d\n", res);
  	 	if (-1 == res)
  	 	{
@@ -64,7 +114,7 @@ int exec_prog(char **argv, char **env)
  	return 0;
 }
 
-int				exec_command(t_shell *shell, char **argv, char **env)
+int				exec_command(t_shell *shell)
 {
 	char	*s;
 
@@ -79,7 +129,7 @@ int				exec_command(t_shell *shell, char **argv, char **env)
 	else if (ft_strequ(s, "cd"))
 		do_cd(shell, s);
 	else
-		exec_prog(argv, env);
+		run(shell->cmd.cmd, shell->cmd.args);
 	return (0);
 }
 

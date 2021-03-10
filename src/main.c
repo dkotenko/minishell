@@ -56,7 +56,7 @@ void		handle_input(char **s)
 }
 
 
-int			main(int argc, char **argv, char **env)
+int			main(int argc, char **argv)
 {
 	char	*s;
 	t_shell	*shell;
@@ -80,7 +80,8 @@ int			main(int argc, char **argv, char **env)
 			handle_input(&splitted[i]);
 			separate_cmd_args(shell, splitted[i++]);
 			//ft_printf("%s ||| %s\n", shell->cmd.cmd, shell->cmd.args);
-			exec_command(shell, argv, env);
+			
+			exec_command(shell);
 		}
 		splitted ? free_2dchararr_terminated(splitted) : 0;
 		free(s);

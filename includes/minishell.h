@@ -81,7 +81,8 @@ void			exec_bin();
 int 			exec_prog(char **argv, char **env);
 int				do_exit();
 int				do_echo(t_curr_cmd cmd);
-int				exec_command(t_shell *shell, char **argv, char **env);
+int				exec_command(t_shell *shell);
+void run(const char* program, const char* arg);
 
 /*
 ** quotation.c
