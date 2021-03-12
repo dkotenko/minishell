@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/03/07 19:24:38 by clala            ###   ########.fr       */
+/*   Updated: 2021/03/12 23:19:32 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,43 +47,60 @@ void		do_trim(char **s)
 	free(temp);
 }
 
+char		*get_var_extend(char *pos)
+{
+	int		i;
+
+	i = 0;
+	while (pos[1 + i] && !is_space_tab(pos[1 + i]) && pos[1 + i] != '$')
+		i++;
+	if (!i)
+		return (NULL);
+	return (ft_strndup(pos, i + 1));
+}
+
 void		replace_env_variables(char **s)
 {
 	char	*dollar_pos;
-	int		i;
-	char	*var_name;
+	char	*var_extend;
 	char	*value;
 	char	*temp;
+	int		new_len;
 
 	dollar_pos = *s;
-	while (*s && (dollar_pos = ft_strchr(*s, '$')))
+	while (*s && (dollar_pos = ft_strchr(dollar_pos, '$')))
 	{
-		i = dollar_pos - *s;
-		while ((*s)[i + 1] && !is_space_tab((*s)[i + 1]))
-			i++;
-		if (i == dollar_pos - *s)
-			break ;
-		var_name = ft_strndup(dollar_pos, i - (dollar_pos - *s) + 1);
-		value = ft_getenv(var_name + 1);
+		var_extend = get_var_extend(dollar_pos);
+		//ft_printf("%s\n", var_extend);
+		if (!var_extend && dollar_pos++)
+			continue ;
+		value = ft_getenv(var_extend + 1);
 		temp = *s;
 		if (!value)
 		{
-			*s = ft_strnew(ft_strlen(temp) - ft_strlen(var_name));
+			new_len = ft_strlen(temp) - ft_strlen(var_extend);
+			*s = ft_strnew(new_len);
+			//ft_printf("%s\n", *s);
 			ft_strncpy(*s, temp, dollar_pos - temp);
-			ft_strcpy(temp + ft_strlen(var_name) ,*s + (dollar_pos - temp));
+			ft_strcat(*s, dollar_pos + 1 + ft_strlen(var_extend));
+			//ft_printf("aa %s\n", *s);
 		}
 		else
-			*s = ft_strreplace(*s, var_name, value);
+			*s = ft_strreplace(*s, var_extend, value);
+		//ft_printf("%s\n", *s);
 		free(temp);
-		free(var_name);
+		free(var_extend);
 	}
 }
 
+
+
 void		handle_input(t_dlist *allocated, char **s)
 {
+	replace_env_variables(s);
 	do_trim(s);
 	(void)allocated;
-	replace_env_variables(s);
+	
 }
 
 /*

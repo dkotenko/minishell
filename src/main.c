@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/03/07 19:45:33 by clala            ###   ########.fr       */
+/*   Updated: 2021/03/12 23:24:01 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void		separate_cmd_args(t_shell *shell, char *s)
 	char	*space_pos;
 	char	*temp;
 
-	ft_printf("%s\n");
+	//ft_printf("%s\n");
 	space_pos = ft_strchr(s, ' ');
 	ft_bzero(&cmd, sizeof(t_curr_cmd));
 	if (!space_pos)
@@ -42,8 +42,6 @@ void		separate_cmd_args(t_shell *shell, char *s)
 		free(temp);
 		cmd.args = ft_strtrim(space_pos + 1);
 	}
-	shell->cmd.args ? free(shell->cmd.args) : 0;
-	shell->cmd.cmd ? free(shell->cmd.cmd) : 0;
 	shell->cmd = cmd;
 }
 /*
@@ -56,36 +54,43 @@ sega
 
 
 //cd env - sega
-int			main(int argc, char **argv)
+
+void		clear_cmd_args(t_curr_cmd *cmd)
+{
+	cmd->args ? free(cmd->args) : 0;
+	cmd->cmd ? free(cmd->cmd) : 0;
+	ft_bzero(cmd, sizeof(t_curr_cmd));
+}
+int			main()
 {
 	char	*s;
 	t_shell	*shell;
 	char	**splitted;
 	int		i;
+	char	*temp;
 	
-	(void)argv;
-	argc > 1 ? exit(0) : 0;
 	shell = t_shell_new();
-	s = shell->input->buf->s;
+	//s = shell->input->buf->s;
 	signal (SIGINT, &interrupt); //в функции interrupt надо убить форк запущенного процесса
 	//parse_system_environ(shell, env);
 	while (ft_printf("$> ") && get_next_line(STDIN_FILENO, &s))
 	{
 		if (!ft_strlen(s) && ft_free_int(s))
 			continue ;
-		i = 0;
 		splitted = ft_strsplit(s, ';');
-		while (splitted[i])
-		{
-			handle_input(shell->allocated, &splitted[i]);
-			
-			separate_cmd_args(shell, splitted[i++]);
-			//ft_printf("%s ||| %s\n", shell->cmd.cmd, shell->cmd.args);
-			
-			exec_command(shell);
-		}
-		splitted ? free_2dchararr_terminated(splitted) : 0;
 		free(s);
+		i = -1;
+		while (splitted[++i])
+		{
+			temp = ft_strdup(splitted[i]);
+			handle_input(shell->allocated, &temp);
+			separate_cmd_args(shell, temp);
+			//ft_printf("%s ||| %s\n", shell->cmd.cmd, shell->cmd.args);
+			exec_command(shell);
+			temp ? free(temp) : 0;
+		}
+		free_2dchararr_terminated(splitted);
+		
 	}
 	return (0);
 }
