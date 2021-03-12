@@ -30,6 +30,7 @@ void		separate_cmd_args(t_shell *shell, char *s)
 	char	*space_pos;
 	char	*temp;
 
+	ft_printf("%s\n");
 	space_pos = ft_strchr(s, ' ');
 	ft_bzero(&cmd, sizeof(t_curr_cmd));
 	if (!space_pos)

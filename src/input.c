@@ -47,7 +47,7 @@ void		do_trim(char **s)
 	free(temp);
 }
 
-void		replace_env_variables(t_dlist *allocated, char **s)
+void		replace_env_variables(char **s)
 {
 	char	*dollar_pos;
 	int		i;
@@ -56,38 +56,34 @@ void		replace_env_variables(t_dlist *allocated, char **s)
 	char	*temp;
 
 	dollar_pos = *s;
-	while (*s && (dollar_pos = ft_strchr(dollar_pos, '$')))
+	while (*s && (dollar_pos = ft_strchr(*s, '$')))
 	{
 		i = dollar_pos - *s;
-		
 		while ((*s)[i + 1] && !is_space_tab((*s)[i + 1]))
 			i++;
 		if (i == dollar_pos - *s)
 			break ;
 		var_name = ft_strndup(dollar_pos, i - (dollar_pos - *s) + 1);
 		value = ft_getenv(var_name + 1);
+		temp = *s;
 		if (!value)
 		{
-			value = ft_strdup("");
-			t_dlist_append(allocated, t_dlist_node_new(value, sizeof(char *)));
+			*s = ft_strnew(ft_strlen(temp) - ft_strlen(var_name));
+			ft_strncpy(*s, temp, dollar_pos - temp);
+			ft_strcpy(temp + ft_strlen(var_name) ,*s + (dollar_pos - temp));
 		}
-		ft_printf("value:%s\n", value);
-		temp = *s;
-		*s = ft_strreplace(*s, var_name, value);
+		else
+			*s = ft_strreplace(*s, var_name, value);
 		free(temp);
 		free(var_name);
-		remove_if_allocated(allocated, value);
-		dollar_pos++;
-		//получить имя переменной
-		//найти имя в env, вернуть значение, если нет - вернуть """
-		//заменить доллар + имя на значение
 	}
 }
 
 void		handle_input(t_dlist *allocated, char **s)
 {
 	do_trim(s);
-	replace_env_variables(allocated, s);
+	(void)allocated;
+	replace_env_variables(s);
 }
 
 /*
