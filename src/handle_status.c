@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/02/10 19:10:04 by clala            ###   ########.fr       */
+/*   Updated: 2021/03/13 13:36:20 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void		handle_status_variable(t_shell *shell, char *s, int *i)
 	else
 	{
 		variable_name = ft_strndup(s + start, *i - start);
-		variable_value = get_env(shell, variable_name);
+		variable_value = ft_getenv(variable_name);
 		free(variable_name);
 		if (variable_value)
 			t_buffer_write(shell->input->cmd->tail->data, variable_value);

@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/03/07 20:25:24 by clala            ###   ########.fr       */
+/*   Updated: 2021/03/13 16:26:36 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,9 +69,10 @@ typedef struct	s_curr_cmd
 typedef struct	s_shell
 {
 	t_input		*input;
-	t_htable	*env;
 	t_curr_cmd	cmd;
 	t_dlist		*allocated;
+	t_htable	*executables;
+	char		*path_var;
 }				t_shell;
 
 /*
@@ -110,10 +111,7 @@ int				is_cd_command(char *s);
 int				do_environ(t_shell *shell);
 void			do_env(t_shell *shell);
 void			unset_env(t_shell *shell, char *key);
-int				set_env(t_shell *shell, char *key, char *value);
-char			*get_env(t_shell *shell, char *key);
 void			remove_if_allocated(t_dlist *allocated, void *data);
-//char			**get_environ(t_shell *shell);
 
 int				ft_putenv(t_dlist *allocated, char *s);
 char			*ft_getenv(const char *name);
@@ -148,4 +146,10 @@ int				is_empty_string(char *s);
 int				is_space_tab(int c);
 int			here(void);
 void		add_token(t_input *input, char *s, int i);
+
+/*
+** t_shell.c
+*/
+t_shell		*t_shell_new(void);
+void		update_exec_table(t_shell *shell);
 #endif

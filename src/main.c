@@ -6,23 +6,13 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/03/12 23:24:01 by clala            ###   ########.fr       */
+/*   Updated: 2021/03/13 12:30:59 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_shell		*t_shell_new(void)
-{
-	t_shell	*new;
 
-	new = (t_shell *)ft_memalloc(sizeof(t_shell));
-	new->env = t_htable_init(
-		T_HTABLE_INIT_PRIME_NUMBER, &cmp_func, &hash_func_fnv_1a_32);
-	new->input = t_input_new();
-	new->allocated = t_dlist_new();
-	return (new);
-}
 
 void		separate_cmd_args(t_shell *shell, char *s)
 {

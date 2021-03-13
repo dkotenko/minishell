@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putchar_fd.c                                    :+:      :+:    :+:   */
+/*   do_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2020/02/15 21:53:21 by clala            ###   ########.fr       */
+/*   Updated: 2021/03/13 13:38:11 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,14 +140,13 @@ int			get_valid_path(char *path, char *origin_path)
 }
 
 
-char		*create_relative_path(t_shell *shell, char *path)
+char		*create_relative_path(char *path)
 {
 	char	*pwd;
 	char	*temp;
 	char	*relative;
 
-	pwd = ft_strdup(get_env(shell, ENV_PWD));
-	
+	pwd = ft_strdup(ft_getenv(ENV_PWD));
 	temp = ft_strjoin(pwd, "/");
 	free(pwd);
 	relative = ft_strjoin(temp, path);
@@ -157,7 +156,7 @@ char		*create_relative_path(t_shell *shell, char *path)
 }
 
 //cd - or cd ~- or cd $OLD_PWD
-char		*create_path(t_shell *shell, char *s)
+char		*create_path(char *s)
 {
 	char	*path;
 	char	*temp;
@@ -167,13 +166,13 @@ char		*create_path(t_shell *shell, char *s)
 	if (s && s[0] == '/')
 		return (ft_strdup(s));
 	if (ft_strequ(s, "-"))
-		return (ft_strdup(get_env(shell, ENV_OLDPWD)));
+		return (ft_strdup(ft_getenv(ENV_OLDPWD)));
 	if (!s || ft_strequ(s, "~"))
-		return (ft_strdup(get_env(shell, ENV_HOME)));
+		return (ft_strdup(ft_getenv(ENV_HOME)));
 	if (ft_strnequ(s, "~", 1))
-		return (ft_strreplace(s, "~", get_env(shell, ENV_HOME)));
+		return (ft_strreplace(s, "~", ft_getenv(ENV_HOME)));
 	if (s[0] != '/')
-		return (create_relative_path(shell, s));
+		return (create_relative_path(s));
 	return (ft_strdup(s));
 }
 
@@ -192,13 +191,13 @@ int			do_cd(t_shell *shell, char *s)
 		free_2dchararr_terminated(splitted);
 		return (1);
 	}	
-	pwd = create_path(shell, splitted[1]);
+	pwd = create_path(splitted[1]);
 	temp = pwd;
 	if (get_valid_path(pwd, splitted[1]))
 	{
-		old_pwd = ft_strdup(get_env(shell, ENV_PWD));
-		set_env(shell, ENV_PWD, pwd);
-		set_env(shell, ENV_OLDPWD, old_pwd);
+		old_pwd = ft_strdup(ft_getenv(ENV_PWD));
+		ft_setenv(ENV_PWD, pwd, 1, shell->allocated);
+		ft_setenv(ENV_OLDPWD, old_pwd, 1, shell->allocated);
 	}
 	free_2dchararr_terminated(splitted);
 	return (1);

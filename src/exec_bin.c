@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/03/13 00:11:06 by clala            ###   ########.fr       */
+/*   Updated: 2021/03/13 14:44:08 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,37 +32,27 @@ static char			**get_argv_from_s(const char* program, const char* arg)
 	return (splitted);
 }
 
-int				exec_exists(const char* filename)
+int				is_file_exists(const char* filename)
 {
 	struct stat	s_buffer;
 	
     return (stat(filename,&s_buffer) == 0);
 }
 
-int				exec_has_access(char *filename)
+/*
+int				is_file_access(char *filename, int access_type)
 {
-    return (access(filename, X_OK ) == -1);
+    return (access(filename, access_type ) == -1); //X_OK
 }
-
-//unix ищет файл во всех папках с начала до конца, запускает первый
-char			get_exec_path(char *program, char **environ)
+*/
+/*
+void	get_dir_execs(char *dir_path)
 {
-	char		**splitted_path;
-	char		*path;
-	char		**temp;
-
-	path = ft_getenv("PATH");
-	free(path);
-	temp = splitted_path;
-	splitted_path = ft_strsplit(path, ';');
-	while (*temp)
-	{
-		
-		temp++;
-	}
-	free_2dchararr_terminated(splitted_path);
-}
 	
+}
+*/
+
+
 
 void run(const char* program, const char* arg)
 {
@@ -79,7 +69,7 @@ void run(const char* program, const char* arg)
 		exit(printf("error\n"));
 	if (!pid)
 	{
-		program_path = get_exec_path(program, environ);
+		program_path = NULL; //get_exec_path(program, environ);
 		argv = get_argv_from_s(program, arg);
 		if (!program_path || -1 == execve(argv[0], argv, environ))
 			ft_printf("%s: %s: %s\n", SHELL_NAME, MSG_CMD_NOT_FOUND, argv[0]);
@@ -90,6 +80,39 @@ void run(const char* program, const char* arg)
 		waitpid(pid, &state, 0);
 	//(WIFSIGNALED(state)) ? shell_print_signal(WTERMSIG(state)) : 0;
 }
+
+void			do_pwd(t_curr_cmd cmd)
+{
+	cmd.args = ft_getenv(ENV_PWD);
+	do_echo(cmd);
+}
+
+int				is_builtin(char *name)
+{
+	char		*start;
+	int			name_len;
+
+	if (!(start = ft_strstr(BUILTIN_LIST, name)))
+		return (0);
+	name_len = ft_strlen(name);
+	return (is_space_tab(*(start + name_len)) || !*(start + name_len));
+}
+
+void			do_type(t_curr_cmd cmd)
+{
+	(void)cmd;
+	/*
+	pwd is a shell builtin
+oa-e3% type export
+export is a reserved word
+oa-e3% type varchar
+varchar not found
+oa-e3% type echo
+echo is a shell builtin
+*/
+}
+
+
 
 int				exec_command(t_shell *shell)
 {
@@ -107,6 +130,10 @@ int				exec_command(t_shell *shell)
 		do_echo(shell->cmd);
 	else if (ft_strequ(s, "cd"))
 		do_cd(shell, s);
+	else if (ft_strequ(s, "pwd"))
+		do_pwd(shell->cmd);
+	else if (ft_strequ(s, "type"))
+		do_type(shell->cmd);
 	else
 		run(shell->cmd.cmd, shell->cmd.args);
 	return (0);

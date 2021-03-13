@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/02/07 18:43:30 by clala            ###   ########.fr       */
+/*   Updated: 2021/03/13 14:08:33 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@
 # define ENV_HOME "HOME"
 # define ENV_PWD "PWD"
 # define ENV_OLDPWD "OLDPWD"
+# define ENV_PATH "PATH"
 # define SHELL_NAME "minishell"
+# define BUILTIN_LIST "exit env setenv unsetenv echo cd pwd type"
 # define CHAR_BUFF_SIZE 1
 
 enum			token_type

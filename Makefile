@@ -6,7 +6,7 @@
 #    By: clala <clala@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/15 16:58:46 by clala             #+#    #+#              #
-#    Updated: 2021/03/07 19:54:55 by clala            ###   ########.fr        #
+#    Updated: 2021/03/13 14:32:57 by clala            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,8 @@ ALL_C =	main.c \
 		signals.c \
 		handle_status.c \
 		handle_status_aux.c \
-		environ_short.c
+		environ_methods.c \
+		t_shell.c
 
 SRCDIR = ./src
 OBJDIR = ./objs
