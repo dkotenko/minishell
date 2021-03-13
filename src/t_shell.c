@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/03/13 16:46:22 by clala            ###   ########.fr       */
+/*   Updated: 2021/03/13 21:48:28 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,9 @@ char			*join_3_strings(char *s1, char *s2, char *s3)
 
 //unix ищет файл во всех папках с начала до конца, запускает первый
 //ищет имя в таблица, далее пытается запустить (доступ/запуск). Нет прав ? пишет zsh: command not found: prog
+
+#include <errno.h>
+
 void				add_dir_execs(t_htable *t, char *dir_path)
 {
 	char			*curr_exec;
@@ -40,7 +43,7 @@ void				add_dir_execs(t_htable *t, char *dir_path)
 	struct stat		s_stat;
 	DIR				*dir;
 	struct dirent	*s_d;
-
+	
 	if (stat(dir_path, &s_stat) == -1 ||
 		!S_ISDIR(s_stat.st_mode) ||
 		access(dir_path, R_OK) == -1)
@@ -48,15 +51,22 @@ void				add_dir_execs(t_htable *t, char *dir_path)
 	dir = opendir(dir_path);
 	while ((s_d = readdir(dir)) != NULL)
 	{
-		if (stat(s_d->d_name, &s_stat) == 0 && s_stat.st_mode & S_IXUSR)
+		if (ft_strequ(s_d->d_name, "..") || ft_strequ(s_d->d_name, "."))
+			continue ;
+		curr_exec = s_d->d_name;
+		
+		fullpath = join_3_strings(dir_path, "/", curr_exec);
+		ft_printf("%s %s %s\n", dir_path, curr_exec, fullpath);
+		if (stat(fullpath, &s_stat) == 0 && s_stat.st_mode & S_IXUSR &&
+		!access(fullpath, R_OK))
 		{
-			curr_exec = s_d->d_name;
-			fullpath = join_3_strings(dir_path, "/", curr_exec);
-			
+			(void)t;
+			//ft_printf("%s %d %s\n", s_d->d_name, errno, strerror(errno));
 			t_htable_set(t, curr_exec, fullpath);
-			ft_printf("key:%s value:%s\n", curr_exec, t_htable_get(t, curr_exec));
+			//ft_printf("key:%s value:%s\n", fullpath, t_htable_get(t, curr_exec));
+		}
+		else
 			free(fullpath);
-		}	
 	}
 	closedir(dir);
 }
