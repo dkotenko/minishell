@@ -38,9 +38,9 @@ LIBFT_DIR = ./libft
 LIBFT = $(LIBFT_DIR)/libft.a
 COMP_LIB = make -C $(LIBFT_DIR)
 CC = gcc
-FLAGS = -Wall -Wextra -Werror #-g -fsanitize=address
+FLAGS = -Wall -Wextra -Werror
 
-all: $(LIBFT) $(OBJDIR) $(NAME)
+all: lib $(OBJDIR) $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT)
 	$(CC) $(FLAGS) $(OBJS) -o $@ $(LIBFT)

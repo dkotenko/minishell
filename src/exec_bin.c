@@ -71,7 +71,7 @@ void run(const char* program, const char* arg)
 	{
 		program_path = NULL; //get_exec_path(program, environ);
 		argv = get_argv_from_s(program, arg);
-		if (!program_path || -1 == execve(argv[0], argv, environ))
+		if (!program_path || -1 == execve(argv[0], argv, environ)) 
 			ft_printf("%s: %s: %s\n", SHELL_NAME, MSG_CMD_NOT_FOUND, argv[0]);
 		free_2dchararr_terminated(argv);
 		exit(EXIT_SUCCESS);

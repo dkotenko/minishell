@@ -25,8 +25,7 @@
 # include <term.h>
 # include <curses.h>
 
-# include "ft_printf.h"
-# include "error.h"
+# include "libft.h"
 # include "const.h"
 # include "msg.h"
 

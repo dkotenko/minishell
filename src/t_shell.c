@@ -56,7 +56,7 @@ void				add_dir_execs(t_htable *t, char *dir_path)
 		curr_exec = s_d->d_name;
 		
 		fullpath = join_3_strings(dir_path, "/", curr_exec);
-		ft_printf("%s %s %s\n", dir_path, curr_exec, fullpath);
+		//ft_printf("%s %s %s\n", dir_path, curr_exec, fullpath);
 		if (stat(fullpath, &s_stat) == 0 && s_stat.st_mode & S_IXUSR &&
 		!access(fullpath, R_OK))
 		{
