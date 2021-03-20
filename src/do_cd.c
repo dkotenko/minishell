@@ -32,11 +32,9 @@ char		**get_path_tokens(char *path)
 		if (ft_strequ("..", splitted[i]))
 		{	
 			path_tokens[j] ? ft_free_null((void **)&path_tokens[j]) : 0;
-			j--;
-			j = j < 0 ? 0 : j;
+			j = j == 0 ? 0 : j - 1;
 			path_tokens[j] ? ft_free_null((void **)&path_tokens[j]) : 0;
-			j--;
-			j = j < 0 ? 0 : j;
+			j = j == 0 ? 0 : j - 1;
 			continue ;
 		}
 		else if (ft_strequ(".", splitted[i]))
@@ -183,8 +181,9 @@ int			do_cd(t_shell *shell, char *s)
 	char	*old_pwd;
 	char	*temp;
 
-	splitted = ft_strsplit(s, ' ');
-	pwd = NULL;
+	if (!shell->cmd.args)
+		shell->cmd.args = ft_strdup(ft_getenv(ENV_PWD));
+	splitted = ft_strsplit(shell->cmd.args, ' ');
 	if (len_2dchararr_terminated(splitted) > 2)
 	{
 		ft_printf("cd: string not in pwd: %s\n", s);
@@ -195,10 +194,14 @@ int			do_cd(t_shell *shell, char *s)
 	temp = pwd;
 	if (get_valid_path(pwd, splitted[1]))
 	{
+		ft_putendl("hefdfdfre");
+		ft_putendl(pwd);
 		old_pwd = ft_strdup(ft_getenv(ENV_PWD));
 		ft_setenv(ENV_PWD, pwd, 1, shell->allocated);
 		ft_setenv(ENV_OLDPWD, old_pwd, 1, shell->allocated);
+		free(old_pwd);
 	}
+	free(temp);
 	free_2dchararr_terminated(splitted);
 	return (1);
 }

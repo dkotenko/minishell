@@ -32,6 +32,7 @@ void			remove_if_allocated(t_dlist *allocated, void *data)
 
 	if ((node = was_allocated(allocated, data)))
 	{
+		ft_printf("here\n");
 		free(node->data);
 		t_dlist_remove_node(allocated, node);
 	}

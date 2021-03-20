@@ -72,6 +72,7 @@ typedef struct	s_shell
 	t_dlist		*allocated;
 	t_htable	*executables;
 	char		*path_var;
+	char		*s;
 }				t_shell;
 
 /*
@@ -126,7 +127,7 @@ void			quote_tokenizer(char *s, t_quote *q, t_dlist *list);
 //void			handle_input(t_shell *shell);
 void			interrupt(int a);
 t_input			*t_input_new(void);
-void		handle_input(t_dlist *allocated, char **s);
+void		handle_input(t_shell *shell, t_dlist *allocated, char **s);
 void		replace_env_variables(char **s);
 
 /*

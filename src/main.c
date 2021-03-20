@@ -45,24 +45,20 @@ sega
 
 //cd env - sega
 
-void		clear_cmd_args(t_curr_cmd *cmd)
-{
-	cmd->args ? free(cmd->args) : 0;
-	cmd->cmd ? free(cmd->cmd) : 0;
-	ft_bzero(cmd, sizeof(t_curr_cmd));
-}
+
 int			main()
 {
-	char	*s;
 	t_shell	*shell;
 	char	**splitted;
 	int		i;
 	char	*temp;
-	
+	char	*s;
+
 	shell = t_shell_new();
 	//s = shell->input->buf->s;
 	signal (SIGINT, &interrupt); //в функции interrupt надо убить форк запущенного процесса
 	//parse_system_environ(shell, env);
+	s = shell->s;
 	while (ft_printf("$> ") && get_next_line(STDIN_FILENO, &s))
 	{
 		if (!ft_strlen(s) && ft_free_int(s))
@@ -72,8 +68,9 @@ int			main()
 		i = -1;
 		while (splitted[++i])
 		{
+			
 			temp = ft_strdup(splitted[i]);
-			handle_input(shell->allocated, &temp);
+			handle_input(shell, shell->allocated, &temp);
 			separate_cmd_args(shell, temp);
 			//ft_printf("%s ||| %s\n", shell->cmd.cmd, shell->cmd.args);
 			exec_command(shell);

@@ -93,10 +93,17 @@ void		replace_env_variables(char **s)
 	}
 }
 
-
-
-void		handle_input(t_dlist *allocated, char **s)
+void		clear_cmd_args(t_curr_cmd *cmd)
 {
+	cmd->args ? free(cmd->args) : 0;
+	cmd->cmd ? free(cmd->cmd) : 0;
+	ft_bzero(cmd, sizeof(t_curr_cmd));
+}
+
+
+void		handle_input(t_shell *shell,t_dlist *allocated, char **s)
+{
+	clear_cmd_args(&shell->cmd);
 	replace_env_variables(s);
 	do_trim(s);
 	(void)allocated;
