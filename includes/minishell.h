@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/03/13 16:26:36 by clala            ###   ########.fr       */
+/*   Updated: 2021/03/20 19:55:20 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ typedef struct	s_shell
 	t_htable	*executables;
 	char		*path_var;
 	char		*s;
+	char		**environ;
 }				t_shell;
 
 /*
@@ -114,9 +115,10 @@ void			unset_env(t_shell *shell, char *key);
 void			remove_if_allocated(t_dlist *allocated, void *data);
 
 int				ft_putenv(t_dlist *allocated, char *s);
-char			*ft_getenv(const char *name);
-int				ft_unsetenv(t_dlist *allocated, const char *name);
-int ft_setenv(const char *name, const char *value, int overwrite, t_dlist *allocated);
+char			*ft_getenv(char **environ, const char *name);
+int				ft_unsetenv(char **environ, t_dlist *allocated, const char *name);
+int				ft_setenv(char **environ, const char *name,
+					const char *value, t_dlist *allocated);
 
 void			quote_tokenizer(char *s, t_quote *q, t_dlist *list);
 
@@ -128,7 +130,7 @@ void			quote_tokenizer(char *s, t_quote *q, t_dlist *list);
 void			interrupt(int a);
 t_input			*t_input_new(void);
 void		handle_input(t_shell *shell, t_dlist *allocated, char **s);
-void		replace_env_variables(char **s);
+void		replace_env_variables(char **environ, char **s);
 
 /*
 **handle_status.c

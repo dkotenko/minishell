@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/03/13 16:26:08 by clala            ###   ########.fr       */
+/*   Updated: 2021/03/20 19:53:08 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,8 @@ void		do_setenv(t_shell *shell)
 		free_2dchararr_terminated(key_val);
 		return ;
 	}
-	ft_setenv(key_val[T_HTABLE_KEY], key_val[T_HTABLE_VALUE], 1, shell->allocated);
+	ft_setenv(shell->environ, key_val[T_HTABLE_KEY],
+		key_val[T_HTABLE_VALUE], shell->allocated);
 	free_2dchararr_terminated(key_val);
 }
 
@@ -144,7 +145,7 @@ int			do_environ(t_shell *shell)
 	}
 	else if (ft_strequ(shell->cmd.cmd, "unsetenv"))
 	{
-		ft_unsetenv(shell->allocated, shell->cmd.args);
+		ft_unsetenv(shell->environ, shell->allocated, shell->cmd.args);
 		env_changed = 1;
 	}
 	env_changed ? update_exec_table(shell) : 0;

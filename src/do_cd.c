@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/03/13 13:38:11 by clala            ###   ########.fr       */
+/*   Updated: 2021/03/20 21:22:15 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ int			get_valid_path(char *path, char *origin_path)
 		temp = curr_dir;
 		curr_dir = ft_strjoin(curr_dir, path_tokens[i]);
 		free(temp);
+		//ft_printf("%s\n", origin_path);
 		check_dir(curr_dir, &error, origin_path);
 		temp = curr_dir;
 		curr_dir = ft_strjoin(curr_dir, "/");
@@ -138,13 +139,13 @@ int			get_valid_path(char *path, char *origin_path)
 }
 
 
-char		*create_relative_path(char *path)
+char		*create_relative_path(char **environ, char *path)
 {
 	char	*pwd;
 	char	*temp;
 	char	*relative;
 
-	pwd = ft_strdup(ft_getenv(ENV_PWD));
+	pwd = ft_strdup(ft_getenv(environ, ENV_PWD));
 	temp = ft_strjoin(pwd, "/");
 	free(pwd);
 	relative = ft_strjoin(temp, path);
@@ -154,7 +155,7 @@ char		*create_relative_path(char *path)
 }
 
 //cd - or cd ~- or cd $OLD_PWD
-char		*create_path(char *s)
+char		*create_path(char **environ, char *s)
 {
 	char	*path;
 	char	*temp;
@@ -164,13 +165,13 @@ char		*create_path(char *s)
 	if (s && s[0] == '/')
 		return (ft_strdup(s));
 	if (ft_strequ(s, "-"))
-		return (ft_strdup(ft_getenv(ENV_OLDPWD)));
+		return (ft_strdup(ft_getenv(environ, ENV_OLDPWD)));
 	if (!s || ft_strequ(s, "~"))
-		return (ft_strdup(ft_getenv(ENV_HOME)));
+		return (ft_strdup(ft_getenv(environ, ENV_HOME)));
 	if (ft_strnequ(s, "~", 1))
-		return (ft_strreplace(s, "~", ft_getenv(ENV_HOME)));
+		return (ft_strreplace(s, "~", ft_getenv(environ, ENV_HOME)));
 	if (s[0] != '/')
-		return (create_relative_path(s));
+		return (create_relative_path(environ, s));
 	return (ft_strdup(s));
 }
 
@@ -182,23 +183,25 @@ int			do_cd(t_shell *shell, char *s)
 	char	*temp;
 
 	if (!shell->cmd.args)
-		shell->cmd.args = ft_strdup(ft_getenv(ENV_PWD));
+		shell->cmd.args = ft_strdup(ft_getenv(shell->environ, ENV_PWD));
 	splitted = ft_strsplit(shell->cmd.args, ' ');
-	if (len_2dchararr_terminated(splitted) > 2)
+	if (len_2dchararr_terminated(splitted) > 1)
 	{
 		ft_printf("cd: string not in pwd: %s\n", s);
 		free_2dchararr_terminated(splitted);
 		return (1);
-	}	
-	pwd = create_path(splitted[1]);
+	}
+	pwd = create_path(shell->environ, splitted[0]);
+	ft_putendl(pwd);
 	temp = pwd;
-	if (get_valid_path(pwd, splitted[1]))
+	if (get_valid_path(pwd, splitted[0]))
 	{
-		ft_putendl("hefdfdfre");
-		ft_putendl(pwd);
-		old_pwd = ft_strdup(ft_getenv(ENV_PWD));
-		ft_setenv(ENV_PWD, pwd, 1, shell->allocated);
-		ft_setenv(ENV_OLDPWD, old_pwd, 1, shell->allocated);
+		//ft_putendl("hefdfdfre");
+		
+		old_pwd = ft_strdup(ft_getenv(shell->environ, ENV_PWD));
+		//ft_putendl(pwd);
+		ft_setenv(shell->environ, ENV_PWD, pwd, shell->allocated);
+		ft_setenv(shell->environ, ENV_OLDPWD, old_pwd, shell->allocated);
 		free(old_pwd);
 	}
 	free(temp);

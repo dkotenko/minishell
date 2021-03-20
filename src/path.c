@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   t_shell.c                                          :+:      :+:    :+:   */
+/*   path.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/03/13 21:48:28 by clala            ###   ########.fr       */
+/*   Updated: 2021/03/20 19:56:12 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,14 +70,14 @@ void				add_dir_execs(t_htable *t, char *dir_path)
 	closedir(dir);
 }
 
-void			handle_exec_table(t_htable *t)
+void			handle_exec_table(char **environ, t_htable *t)
 {
 	char		**splitted_path;
 	char		*path;
 	char		**temp;
 
 	
-	path = ft_getenv("PATH");
+	path = ft_getenv(environ, "PATH");
 	splitted_path = ft_strsplit(path, ':');
 	temp = splitted_path;
 	while (*temp)
@@ -92,7 +92,7 @@ void		update_path_var(t_shell *shell)
 {
 	char	*curr_path;
 
-	curr_path = ft_getenv(ENV_PATH);
+	curr_path = ft_getenv(shell->environ, ENV_PATH);
 	if (ft_strequ(shell->path_var, curr_path))
 		return ;
 	shell->path_var ? free(shell->path_var) : 0;
@@ -103,5 +103,5 @@ void		update_exec_table(t_shell *shell)
 {
 	update_path_var(shell);
 	t_htable_clean_all(shell->executables);
-	handle_exec_table(shell->executables);
+	handle_exec_table(shell->environ, shell->executables);
 }

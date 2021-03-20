@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/03/13 14:44:08 by clala            ###   ########.fr       */
+/*   Updated: 2021/03/20 19:52:35 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,9 +81,9 @@ void run(const char* program, const char* arg)
 	//(WIFSIGNALED(state)) ? shell_print_signal(WTERMSIG(state)) : 0;
 }
 
-void			do_pwd(t_curr_cmd cmd)
+void			do_pwd(char **environ, t_curr_cmd cmd)
 {
-	cmd.args = ft_getenv(ENV_PWD);
+	cmd.args = ft_getenv(environ, ENV_PWD);
 	do_echo(cmd);
 }
 
@@ -131,7 +131,7 @@ int				exec_command(t_shell *shell)
 	else if (ft_strequ(s, "cd"))
 		do_cd(shell, s);
 	else if (ft_strequ(s, "pwd"))
-		do_pwd(shell->cmd);
+		do_pwd(shell->environ, shell->cmd);
 	else if (ft_strequ(s, "type"))
 		do_type(shell->cmd);
 	else
