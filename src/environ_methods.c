@@ -12,72 +12,64 @@
 
 #include "minishell.h"
 
-int				ft_unsetenv(char **environ, t_dlist *allocated, const char *name)
+int			is_valid_spaces(char *args)
 {
-	int			i;
-	int			j;
-	int			len;
+	char	*n1;
+	char	*n2;
+	char	**key_val;
 
-    if (name == NULL || name[0] == '\0' || strchr(name, '=') != NULL)
+	key_val = ft_strsplit(args, '=');
+	n1 = ft_strchr(key_val[T_HTABLE_KEY], ' ');
+	n2 = ft_strchr(key_val[T_HTABLE_VALUE], ' ');
+	if (n1 || n2)
 	{
-        ft_printf("unsetenv: %s\n", MSG_NOT_ENOUGH_ARGS);
-        return -1;
-    }
-    len = ft_strlen(name);
-	i = 0;
-	j = 0;
-    while (environ[i])
-	{
-        if (!ft_strncmp(environ[i], name, len) && environ[i][len] == '=')
-		{
-			j = i;
-			remove_if_allocated(allocated, environ[i]);
-			while (environ[j])
-			{
-				environ[j] = environ[j + 1];
-				j++;
-			}
-        }
-		else
-			i++;
-    }
-    return 0;
-}
-
-int ft_setenv(char **environ, const char *name, const char *value, t_dlist *allocated)
-{
-    char *es;
-
-    if (name == NULL || name[0] == '\0' || ft_strchr(name, '=') != NULL ||
-            value == NULL)
-	{
-        ft_printf("setenv: %s\n", MSG_NOT_ENOUGH_ARGS);
-        return -1;
-    }
-    if (ft_getenv(environ, name) != NULL)
-        return 0;
-    ft_unsetenv(environ, allocated, name);
-    es = ft_strnew(ft_strlen(name) + 1 + ft_strlen(value));
-    ft_strcpy(es, name);
-    ft_strcat(es, "=");
-    ft_strcat(es, value);
-    return (ft_putenv(allocated, es) != 0) ? -1 : 0;
-}
-
-char			*ft_getenv(char **environ, const char *name)
-{
-	int			len;
-	int			i;
-
-	if (name == NULL || environ == NULL)
-		return (NULL);
-	len = ft_strlen(name);
-	i = -1;
-	while (environ[++i])
-	{
-		if (!ft_strncmp(environ[i], name, len) && environ[i][len] == '=')
-			return (environ[i] + len + 1);
+		if (n1 && n2)
+			ft_printf("%s: %s\n", SHELL_NAME, MSG_BAD_ASSIG);
+		else if (n1)
+			ft_printf("%s: %s not found\n", SHELL_NAME, key_val[T_HTABLE_KEY]);
+		else if (n2)
+			ft_printf("%s: %s: \n", SHELL_NAME,
+			MSG_NOT_AN_IDENT, key_val[T_HTABLE_KEY]);
+		free_2dchararr_terminated(key_val);
+		return (0);
 	}
-	return (NULL);
+	free_2dchararr_terminated(key_val);
+	return (1);
 }
 
+int			is_valid_args(char *args)
+{
+	char	*eq;
+
+	eq = ft_strchr(args, '=');
+	if (!eq || eq == args || ft_strchr(args, ' '))
+	{
+		ft_printf("%s: %s\n", SHELL_NAME, MSG_BAD_ASSIG);
+		return (0);
+	}
+	return (1);
+}
+
+void		do_setenv(t_shell *shell)
+{
+	char	*key;
+	char	*value;
+	char	*eq;
+	
+	if (!is_valid_args(shell->cmd.args))
+		return ;
+	eq = ft_strchr(shell->cmd.args, '=');
+	key = ft_strndup(shell->cmd.args, eq - shell->cmd.args - 1);
+	value = ft_strdup(eq + 1);
+	t_htable_set(&shell->env, key, value);
+}
+
+int			set_env(t_shell *shell, char *key, char *value)
+{
+	return (t_htable_set(&shell->env, key, value));
+}
+
+char		*get_env(t_shell *shell, char *key)
+{
+	return (t_htable_get(shell->env, key));
+}

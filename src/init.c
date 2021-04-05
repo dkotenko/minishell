@@ -20,9 +20,11 @@ t_shell			*t_shell_new(void)
 	new = (t_shell *)ft_memalloc(sizeof(t_shell));
 	new->executables = t_htable_init(
 		T_HTABLE_INIT_PRIME_NUMBER, &cmp_func, &hash_func_fnv_1a_32);
+	new->env = t_htable_init(
+		T_HTABLE_INIT_PRIME_NUMBER, &cmp_func, &hash_func_fnv_1a_32);
 	//update_exec_table(new);
 	new->input = t_input_new();
 	new->allocated = t_dlist_new();
-	new->environ = environ;
+	parse_system_environ(new);
 	return (new);
 }

@@ -71,10 +71,12 @@ typedef struct	s_shell
 	t_curr_cmd	cmd;
 	t_dlist		*allocated;
 	t_htable	*executables;
+	t_htable	*env;
 	char		*path_var;
 	char		*s;
-	char		**environ;
+	
 }				t_shell;
+
 
 /*
 ** exec_bin.c
@@ -109,17 +111,13 @@ int				is_cd_command(char *s);
 ** environ.c
 */
 
-int				do_environ(t_shell *shell);
-void			do_env(t_shell *shell);
-void			unset_env(t_shell *shell, char *key);
-void			remove_if_allocated(t_dlist *allocated, void *data);
-
-int				ft_putenv(t_dlist *allocated, char *s);
-char			*ft_getenv(char **environ, const char *name);
-int				ft_unsetenv(char **environ, t_dlist *allocated, const char *name);
-int				ft_setenv(char **environ, const char *name,
-					const char *value, t_dlist *allocated);
-
+void		do_setenv(t_shell *shell);
+char		**get_environ(t_shell *shell);
+void		parse_system_environ(t_shell *shell);
+void		do_env(t_shell *shell);
+int			do_environ(t_shell *shell);
+int			set_env(t_shell *shell, char *key, char *value);
+char		*get_env(t_shell *shell, char *key);
 void			quote_tokenizer(char *s, t_quote *q, t_dlist *list);
 
 
@@ -130,7 +128,7 @@ void			quote_tokenizer(char *s, t_quote *q, t_dlist *list);
 void			interrupt(int a);
 t_input			*t_input_new(void);
 void		handle_input(t_shell *shell, t_dlist *allocated, char **s);
-void		replace_env_variables(char **environ, char **s);
+void		replace_env_variables(t_shell *shell, char **s);
 
 /*
 **handle_status.c

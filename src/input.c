@@ -59,7 +59,7 @@ char		*get_var_extend(char *pos)
 	return (ft_strndup(pos, i + 1));
 }
 
-void		replace_env_variables(char **environ, char **s)
+void		replace_env_variables(t_shell *shell, char **s)
 {
 	char	*dollar_pos;
 	char	*var_extend;
@@ -74,7 +74,7 @@ void		replace_env_variables(char **environ, char **s)
 		//ft_printf("%s\n", var_extend);
 		if (!var_extend && dollar_pos++)
 			continue ;
-		value = ft_getenv(environ, var_extend + 1);
+		value = get_env(shell, var_extend + 1);
 		temp = *s;
 		if (!value)
 		{
@@ -104,7 +104,7 @@ void		clear_cmd_args(t_curr_cmd *cmd)
 void		handle_input(t_shell *shell,t_dlist *allocated, char **s)
 {
 	clear_cmd_args(&shell->cmd);
-	replace_env_variables(shell->environ, s);
+	replace_env_variables(shell, s);
 	do_trim(s);
 	(void)allocated;
 	

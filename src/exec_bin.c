@@ -81,9 +81,9 @@ void run(const char* program, const char* arg)
 	//(WIFSIGNALED(state)) ? shell_print_signal(WTERMSIG(state)) : 0;
 }
 
-void			do_pwd(char **environ, t_curr_cmd cmd)
+void			do_pwd(t_shell *shell, t_curr_cmd cmd)
 {
-	cmd.args = ft_getenv(environ, ENV_PWD);
+	cmd.args = get_env(shell, ENV_PWD);
 	do_echo(cmd);
 }
 
@@ -131,7 +131,7 @@ int				exec_command(t_shell *shell)
 	else if (ft_strequ(s, "cd"))
 		do_cd(shell, s);
 	else if (ft_strequ(s, "pwd"))
-		do_pwd(shell->environ, shell->cmd);
+		do_pwd(shell, shell->cmd);
 	else if (ft_strequ(s, "type"))
 		do_type(shell->cmd);
 	else

@@ -20,7 +20,7 @@ ALL_C =	main.c \
 		handle_status.c \
 		handle_status_aux.c \
 		environ_methods.c \
-		t_shell.c \
+		init.c \
 		path.c
 
 SRCDIR = ./src

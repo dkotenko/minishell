@@ -139,23 +139,22 @@ int			get_valid_path(char *path, char *origin_path)
 }
 
 
-char		*create_relative_path(char **environ, char *path)
+char		*create_relative_path(t_shell *shell, char *path)
 {
 	char	*pwd;
 	char	*temp;
 	char	*relative;
 
-	pwd = ft_strdup(ft_getenv(environ, ENV_PWD));
+	pwd = ft_strdup(get_env(shell, ENV_PWD));
 	temp = ft_strjoin(pwd, "/");
 	free(pwd);
 	relative = ft_strjoin(temp, path);
 	free(temp);
-	
 	return (relative);
 }
 
 //cd - or cd ~- or cd $OLD_PWD
-char		*create_path(char **environ, char *s)
+char		*create_path(t_shell *shell, char *s)
 {
 	char	*path;
 	char	*temp;
@@ -165,13 +164,13 @@ char		*create_path(char **environ, char *s)
 	if (s && s[0] == '/')
 		return (ft_strdup(s));
 	if (ft_strequ(s, "-"))
-		return (ft_strdup(ft_getenv(environ, ENV_OLDPWD)));
+		return (ft_strdup(get_env(shell, ENV_OLDPWD)));
 	if (!s || ft_strequ(s, "~"))
-		return (ft_strdup(ft_getenv(environ, ENV_HOME)));
+		return (ft_strdup(get_env(shell, ENV_HOME)));
 	if (ft_strnequ(s, "~", 1))
-		return (ft_strreplace(s, "~", ft_getenv(environ, ENV_HOME)));
+		return (ft_strreplace(s, "~", get_env(shell, ENV_HOME)));
 	if (s[0] != '/')
-		return (create_relative_path(environ, s));
+		return (create_relative_path(shell, s));
 	return (ft_strdup(s));
 }
 
@@ -179,11 +178,10 @@ int			do_cd(t_shell *shell, char *s)
 {
 	char	**splitted;
 	char	*pwd;
-	char	*old_pwd;
 	char	*temp;
 
 	if (!shell->cmd.args)
-		shell->cmd.args = ft_strdup(ft_getenv(shell->environ, ENV_PWD));
+		shell->cmd.args = ft_strdup(get_env(shell, ENV_PWD));
 	splitted = ft_strsplit(shell->cmd.args, ' ');
 	if (len_2dchararr_terminated(splitted) > 1)
 	{
@@ -191,18 +189,12 @@ int			do_cd(t_shell *shell, char *s)
 		free_2dchararr_terminated(splitted);
 		return (1);
 	}
-	pwd = create_path(shell->environ, splitted[0]);
-	ft_putendl(pwd);
+	pwd = create_path(shell, splitted[0]);
 	temp = pwd;
 	if (get_valid_path(pwd, splitted[0]))
 	{
-		//ft_putendl("hefdfdfre");
-		
-		old_pwd = ft_strdup(ft_getenv(shell->environ, ENV_PWD));
-		//ft_putendl(pwd);
-		ft_setenv(shell->environ, ENV_PWD, pwd, shell->allocated);
-		ft_setenv(shell->environ, ENV_OLDPWD, old_pwd, shell->allocated);
-		free(old_pwd);
+		set_env(shell, ENV_OLDPWD, ft_strdup(get_env(shell, ENV_PWD)));
+		set_env(shell, ENV_PWD, pwd);
 	}
 	free(temp);
 	free_2dchararr_terminated(splitted);

@@ -12,142 +12,90 @@
 
 #include "minishell.h"
 
-t_dlist_node		*was_allocated(t_dlist *allocated, void *address)
-{
-	t_dlist_node	*temp;
 
-	temp = allocated->head;
-	while (temp)
+
+char		**get_environ(t_shell *shell)
+{
+	char	**env;
+	char	***env_arr;
+	int		i;
+
+	env_arr = (char ***)t_htable_get_keys_values(shell->env);
+	if (!(env = (char **)ft_memalloc(sizeof(char *) * 
+	(shell->env->counter + 1))))
+		handle_error(ERR_MALLOC);
+	i = -1;
+	
+	while (++i < shell->env->counter)
 	{
-		if (address == temp->data)
-			break;
-		temp = temp->next;
+		ft_asprintf(&env[i], "%s=%s",
+			env_arr[i][T_HTABLE_KEY],
+			env_arr[i][T_HTABLE_VALUE]);
+		free(env_arr[i]);
 	}
-	return (temp);
+	free(env_arr);
+	return (env);
 }
 
-void			remove_if_allocated(t_dlist *allocated, void *data)
+void		parse_system_environ(t_shell *shell)
 {
-	t_dlist_node	*node;
-
-	if ((node = was_allocated(allocated, data)))
-	{
-		ft_printf("here\n");
-		free(node->data);
-		t_dlist_remove_node(allocated, node);
-	}
-}
-
-int				ft_putenv(t_dlist *allocated, char *s)
-{
+	int		i;
+	char	**splitted;
+	char	*key;
+	char	*value;
 	extern char	**environ;
-	char		*equal_sign;
-	int			environ_len;
-	char		**new_env;
 
-	equal_sign = ft_strchr(s, '=');
-  	if (equal_sign == NULL)
-		return (-1);
-	environ_len = len_2dchararr_terminated(environ);
-	new_env = (char **)ft_memalloc(sizeof(char *) * (environ_len + 1 + 1));
-	ft_memcpy(new_env, environ, environ_len * sizeof(char *));
-	new_env[environ_len] = s;
-	remove_if_allocated(allocated, environ);
-	t_dlist_append(allocated, t_dlist_node_new(new_env, sizeof(char **)));
-	environ = new_env;
-	return 0;
-}
-
-char		**get_key_val(char *s)
-{
-	char	**key_val;
-	char	*temp;
-
-	key_val = ft_strsplit(s, '=');
-	temp = key_val[T_HTABLE_KEY];
-	key_val[T_HTABLE_KEY] = ft_strtrim(key_val[T_HTABLE_KEY]);
-	free(temp);
-	if (key_val[T_HTABLE_VALUE])
+	i = 0;
+	key = NULL;
+	value = NULL;
+	while (environ[i])
 	{
-		temp = key_val[T_HTABLE_VALUE];
-		key_val[T_HTABLE_VALUE] = ft_strtrim(key_val[T_HTABLE_VALUE]);
-		free(temp);
+		splitted = ft_strsplit(environ[i], '=');
+		key = ft_strdup(splitted[0]);
+		if (len_2dchararr_terminated(splitted) > 1)
+			value = ft_strdup(splitted[1]);
+		else
+			value = ft_strdup("");
+		t_htable_add(&shell->env, key, value);
+		free_2dchararr_terminated(splitted);
+		i++;
 	}
-	return (key_val);
 }
 
-int			is_valid_setenv_args(char *s)
+
+void		do_env(t_shell *shell)
 {
-	char	*equal_sign;
-
-	equal_sign = ft_strchr(s, '=');
-	if (!s || !equal_sign || s == equal_sign || ft_strlen(s) == 1)
-	{
-		ft_printf("setenv: %s\n", MSG_NOT_ENOUGH_ARGS);
-		return (0);
-	}
-	return (1);
-}
-
-void		do_setenv(t_shell *shell)
-{
-	char	**key_val;
-	char	*n1;
-	char	*n2;
-
-	if (!is_valid_setenv_args(shell->cmd.args))
-		return ;
-	key_val = get_key_val(shell->cmd.args);
-	n1 = ft_strchr(key_val[T_HTABLE_KEY], ' ');
-	n2 = ft_strchr(key_val[T_HTABLE_VALUE], ' ');
-	if (n1 || n2)
-	{
-		if (n1 && n2)
-			ft_printf("%s: %s\n", SHELL_NAME, MSG_BAD_ASSIG);
-		else if (n1)
-			ft_printf("%s: %s not found\n", SHELL_NAME, key_val[T_HTABLE_KEY]);
-		else if (n2)
-			ft_printf("%s: %s: %s\n", SHELL_NAME, MSG_NOT_AN_IDENT, key_val[T_HTABLE_KEY]);
-		free_2dchararr_terminated(key_val);
-		return ;
-	}
-	ft_setenv(shell->environ, key_val[T_HTABLE_KEY],
-		key_val[T_HTABLE_VALUE], shell->allocated);
-	free_2dchararr_terminated(key_val);
-}
-
-void			do_env(t_shell *shell)
-{
-	int			i;
-	extern char	**environ;
+	int		i;
+	char	**environ;
 
 	if (shell->cmd.args)
 	{
 		ft_printf("env: %s: %s\n", MSG_NO_SUCH_FILE, shell->cmd.args);
 		return ;
 	}
+	environ = get_environ(shell);
 	i = -1;
-	while (environ[++i])
+	while (++i < shell->env->counter)
+	{
 		ft_printf("%s\n", environ[i]);
+	}
+	free_2dchararr_terminated(environ);
 }
 
 int			do_environ(t_shell *shell)
 {
-	int		env_changed;
-
-	env_changed = 0;
 	if (ft_strequ(shell->cmd.cmd, "env"))
 		do_env(shell);
 	else if (ft_strequ(shell->cmd.cmd, "setenv"))
-	{
 		do_setenv(shell);
-		env_changed = 1;
-	}
 	else if (ft_strequ(shell->cmd.cmd, "unsetenv"))
 	{
-		ft_unsetenv(shell->environ, shell->allocated, shell->cmd.args);
-		env_changed = 1;
+		if (!shell->cmd.args)
+		{
+			ft_printf("unsetenv: %s\n", MSG_NOT_ENOUGH_ARGS);
+			return (1);
+		}
+		t_htable_remove(shell->env, shell->cmd.args);
 	}
-	env_changed ? update_exec_table(shell) : 0;
 	return (1);
 }
