@@ -12,15 +12,12 @@
 
 #include "minishell.h"
 
-
-
 void		separate_cmd_args(t_shell *shell, char *s)
 {
 	t_curr_cmd	cmd;
 	char	*space_pos;
 	char	*temp;
 
-	//ft_printf("%s\n");
 	space_pos = ft_strchr(s, ' ');
 	ft_bzero(&cmd, sizeof(t_curr_cmd));
 	if (!space_pos)
@@ -34,17 +31,6 @@ void		separate_cmd_args(t_shell *shell, char *s)
 	}
 	shell->cmd = cmd;
 }
-/*
-$> echo $ffff
-value:
-
-$> echo $d
-sega
-*/
-
-
-//cd env - sega
-
 
 int			main()
 {
@@ -55,9 +41,7 @@ int			main()
 	char	*s;
 
 	shell = t_shell_new();
-	//s = shell->input->buf->s;
 	signal (SIGINT, &interrupt); //в функции interrupt надо убить форк запущенного процесса
-	//parse_system_environ(shell, env);
 	s = shell->s;
 	while (ft_printf("$> ") && get_next_line(STDIN_FILENO, &s))
 	{
@@ -77,7 +61,7 @@ int			main()
 			temp ? free(temp) : 0;
 		}
 		free_2dchararr_terminated(splitted);
-		
 	}
+	exit(0);
 	return (0);
 }

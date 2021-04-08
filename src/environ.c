@@ -37,30 +37,7 @@ char		**get_environ(t_shell *shell)
 	return (env);
 }
 
-void		parse_system_environ(t_shell *shell)
-{
-	int		i;
-	char	**splitted;
-	char	*key;
-	char	*value;
-	extern char	**environ;
 
-	i = 0;
-	key = NULL;
-	value = NULL;
-	while (environ[i])
-	{
-		splitted = ft_strsplit(environ[i], '=');
-		key = ft_strdup(splitted[0]);
-		if (len_2dchararr_terminated(splitted) > 1)
-			value = ft_strdup(splitted[1]);
-		else
-			value = ft_strdup("");
-		t_htable_add(&shell->env, key, value);
-		free_2dchararr_terminated(splitted);
-		i++;
-	}
-}
 
 
 void		do_env(t_shell *shell)

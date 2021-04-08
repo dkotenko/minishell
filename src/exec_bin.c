@@ -66,7 +66,7 @@ void run(const char* program, const char* arg)
 	program_path = NULL;
 	pid = fork();
 	if (pid == -1)
-		exit(printf("error\n"));
+		exit(ft_printf("error\n"));
 	if (!pid)
 	{
 		program_path = NULL; //get_exec_path(program, environ);
@@ -77,7 +77,9 @@ void run(const char* program, const char* arg)
 		exit(EXIT_SUCCESS);
 	}
 	else
+	{
 		waitpid(pid, &state, 0);
+	}
 	//(WIFSIGNALED(state)) ? shell_print_signal(WTERMSIG(state)) : 0;
 }
 

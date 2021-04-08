@@ -118,7 +118,7 @@ void		do_env(t_shell *shell);
 int			do_environ(t_shell *shell);
 int			set_env(t_shell *shell, char *key, char *value);
 char		*get_env(t_shell *shell, char *key);
-void			quote_tokenizer(char *s, t_quote *q, t_dlist *list);
+char		**get_key_val(char *s);
 
 
 /*

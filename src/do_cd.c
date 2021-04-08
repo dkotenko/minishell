@@ -20,9 +20,7 @@ char		**get_path_tokens(char *path)
 	char	**splitted;
 
 	splitted = ft_strsplit(path, '/');
-	i = -1;
-	while (splitted[++i])
-		;
+	i = len_2dchararr_terminated(splitted);
 	path_tokens = (char **)ft_memalloc(sizeof(char *) * (i + 2));
 	j = 0;
 	path_tokens[j++] = ft_strdup("/");
@@ -30,20 +28,15 @@ char		**get_path_tokens(char *path)
 	while (splitted[++i])
 	{
 		if (ft_strequ("..", splitted[i]))
-		{	
+		{
 			path_tokens[j] ? ft_free_null((void **)&path_tokens[j]) : 0;
-			j = j == 0 ? 0 : j - 1;
+			j = j == 1 ? 1 : j - 1;
 			path_tokens[j] ? ft_free_null((void **)&path_tokens[j]) : 0;
-			j = j == 0 ? 0 : j - 1;
+			j = j == 1 ? 1 : j - 1;
 			continue ;
 		}
 		else if (ft_strequ(".", splitted[i]))
 			continue ;
-		else if (ft_strequ("~", splitted[i]))
-		{
-			
-		}
-		
 		path_tokens[j] ? ft_free_null((void **)&path_tokens[j]) : 0;
 		path_tokens[j++] = ft_strdup(splitted[i]);
 	}
@@ -108,15 +101,43 @@ int					check_dir(char *dir_name, char **error, char *origin_path)
 	return (exists);
 }
 
-int			get_valid_path(char *path, char *origin_path)
-{	
-	char	**path_tokens;
+int			free_all(char *error, char *curr_dir)
+{
+	if (error)
+		free(error);
+	free(curr_dir);
+	return (1);
+}
+
+
+
+char		*join_2darr(char **arr, char *sep)
+{
+	t_buffer	*buf;
+	char		*new;
+	int			i;
+
+	buf = t_buffer_create(T_BUFFER_BUFF_SIZE);
+	i = 0;
+	while (arr[i])
+	{
+		t_buffer_write(buf, arr[i]);
+		i++;
+		if (arr[i])
+			t_buffer_write(buf, sep);
+	}
+	new = ft_strdup(buf->s);
+	t_buffer_free(&buf);
+	return (new);
+}
+
+int			is_tokens_valid(char **path_tokens, char *origin_path)
+{
 	char	*error;
 	char	*curr_dir;
 	char	*temp;
 	int		i;
 
-	path_tokens = get_path_tokens(path);
 	error = NULL;
 	curr_dir = ft_strdup("/");
 	i = 0;
@@ -125,19 +146,38 @@ int			get_valid_path(char *path, char *origin_path)
 		temp = curr_dir;
 		curr_dir = ft_strjoin(curr_dir, path_tokens[i]);
 		free(temp);
-		//ft_printf("%s\n", origin_path);
 		check_dir(curr_dir, &error, origin_path);
 		temp = curr_dir;
 		curr_dir = ft_strjoin(curr_dir, "/");
 		free(temp);
-		if (error && ft_printf("%s\n", error) && ft_free_int(error))
+		if (error && ft_printf("%s\n", error) && free_all(error, curr_dir))
 			return (0);
 	}
-	free(curr_dir);
-	free_2dchararr_terminated(path_tokens);
+	free_all(error, curr_dir);
 	return (1);
 }
 
+char		*get_valid_path(char *path, char *origin_path)
+{	
+	char	*new_path;
+	char	**path_tokens;
+	char	*temp;
+
+	new_path = NULL;
+	path_tokens = get_path_tokens(path);
+	if (is_tokens_valid(path_tokens, origin_path))
+	{
+		new_path = join_2darr(path_tokens, "/");
+		if (!ft_strequ(new_path, "/"))
+		{
+			temp = new_path;
+			new_path = ft_strdup(new_path + 1);
+			free(temp);
+		}
+	}
+	free_2dchararr_terminated(path_tokens);
+	return (new_path);
+}
 
 char		*create_relative_path(t_shell *shell, char *path)
 {
@@ -176,27 +216,24 @@ char		*create_path(t_shell *shell, char *s)
 
 int			do_cd(t_shell *shell, char *s)
 {
-	char	**splitted;
 	char	*pwd;
 	char	*temp;
 
 	if (!shell->cmd.args)
 		shell->cmd.args = ft_strdup(get_env(shell, ENV_PWD));
-	splitted = ft_strsplit(shell->cmd.args, ' ');
-	if (len_2dchararr_terminated(splitted) > 1)
+	if (ft_strchr(shell->cmd.args, ' '))
 	{
 		ft_printf("cd: string not in pwd: %s\n", s);
-		free_2dchararr_terminated(splitted);
 		return (1);
 	}
-	pwd = create_path(shell, splitted[0]);
+	pwd = create_path(shell, shell->cmd.args);
 	temp = pwd;
-	if (get_valid_path(pwd, splitted[0]))
-	{
-		set_env(shell, ENV_OLDPWD, ft_strdup(get_env(shell, ENV_PWD)));
-		set_env(shell, ENV_PWD, pwd);
-	}
+	pwd = get_valid_path(pwd, s);
 	free(temp);
-	free_2dchararr_terminated(splitted);
+	if (pwd)
+	{
+		set_env(shell, ft_strdup(ENV_OLDPWD), ft_strdup(get_env(shell, ENV_PWD)));
+		set_env(shell, ft_strdup(ENV_PWD), pwd);
+	}
 	return (1);
 }

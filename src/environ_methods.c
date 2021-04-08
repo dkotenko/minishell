@@ -50,22 +50,38 @@ int			is_valid_args(char *args)
 	return (1);
 }
 
-void		do_setenv(t_shell *shell)
+char		**get_key_val(char *s)
 {
+	char	**key_val;
 	char	*key;
 	char	*value;
 	char	*eq;
+
+	key_val = (char **)ft_memalloc(sizeof(char *) * 3);
+	eq = ft_strchr(s, '=');
+	if (!eq)
+		return (key_val);
+	key = ft_strndup(s, eq - s);
+	value = ft_strdup(eq + 1);
+	key_val[T_HTABLE_KEY] = key;
+	key_val[T_HTABLE_VALUE] = value;
+	return (key_val);
+}
+
+void		do_setenv(t_shell *shell)
+{
+	char	**key_val;
 	
 	if (!is_valid_args(shell->cmd.args))
 		return ;
-	eq = ft_strchr(shell->cmd.args, '=');
-	key = ft_strndup(shell->cmd.args, eq - shell->cmd.args - 1);
-	value = ft_strdup(eq + 1);
-	t_htable_set(&shell->env, key, value);
+	key_val = get_key_val(shell->cmd.args);
+	set_env(shell, key_val[T_HTABLE_KEY], key_val[T_HTABLE_VALUE]);
+	free(key_val);
 }
 
 int			set_env(t_shell *shell, char *key, char *value)
 {
+	
 	return (t_htable_set(&shell->env, key, value));
 }
 
