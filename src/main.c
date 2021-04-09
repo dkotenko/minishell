@@ -32,12 +32,32 @@ void		separate_cmd_args(t_shell *shell, char *s)
 	shell->cmd = cmd;
 }
 
+int			handle_every_command(t_shell *shell, char **splitted)
+{
+	int		i;
+	char	*temp;
+
+	i = -1;
+	temp = NULL;
+	while (splitted[++i])
+	{	
+		temp = ft_strdup(splitted[i]);
+		handle_input(shell, shell->allocated, &temp);
+		if (temp && temp[0])
+		{
+			separate_cmd_args(shell, temp);
+			exec_command(shell);
+		}
+		temp ? free(temp) : 0;
+		temp = NULL;
+	}
+	return (1);
+}
+
 int			main()
 {
 	t_shell	*shell;
 	char	**splitted;
-	int		i;
-	char	*temp;
 	char	*s;
 
 	shell = t_shell_new();
@@ -49,17 +69,7 @@ int			main()
 			continue ;
 		splitted = ft_strsplit(s, ';');
 		free(s);
-		i = -1;
-		while (splitted[++i])
-		{
-			
-			temp = ft_strdup(splitted[i]);
-			handle_input(shell, shell->allocated, &temp);
-			separate_cmd_args(shell, temp);
-			//ft_printf("%s ||| %s\n", shell->cmd.cmd, shell->cmd.args);
-			exec_command(shell);
-			temp ? free(temp) : 0;
-		}
+		handle_every_command(shell, splitted);
 		free_2dchararr_terminated(splitted);
 	}
 	exit(0);

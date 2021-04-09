@@ -47,16 +47,27 @@ void		do_trim(char **s)
 	free(temp);
 }
 
-char		*get_var_extend(char *pos)
+int			is_single_dollar_sign(char *s)
+{
+	if (!s || !s[0])
+		return (0);
+	if (!is_space_tab(*(s + 1)))
+		return (0);
+	return (1);
+}
+
+char		*get_var_extend(char *s)
 {
 	int		i;
 
 	i = 0;
-	while (pos[1 + i] && !is_space_tab(pos[1 + i]) && pos[1 + i] != '$')
+	if (!s || !s[0])
+		return (NULL);
+	while (s[1 + i] && !is_space_tab(s[1 + i]))
 		i++;
 	if (!i)
 		return (NULL);
-	return (ft_strndup(pos, i + 1));
+	return (ft_strndup(s, i + 1));
 }
 
 void		replace_env_variables(t_shell *shell, char **s)
@@ -65,31 +76,26 @@ void		replace_env_variables(t_shell *shell, char **s)
 	char	*var_extend;
 	char	*value;
 	char	*temp;
-	int		new_len;
 
-	dollar_pos = *s;
-	while (*s && (dollar_pos = ft_strchr(dollar_pos, '$')))
+	dollar_pos = ft_strchr(*s, '$');
+	while (dollar_pos)
 	{
-		var_extend = get_var_extend(dollar_pos);
-		//ft_printf("%s\n", var_extend);
-		if (!var_extend && dollar_pos++)
-			continue ;
-		value = get_env(shell, var_extend + 1);
-		temp = *s;
-		if (!value)
-		{
-			new_len = ft_strlen(temp) - ft_strlen(var_extend);
-			*s = ft_strnew(new_len);
-			//ft_printf("%s\n", *s);
-			ft_strncpy(*s, temp, dollar_pos - temp);
-			ft_strcat(*s, dollar_pos + 1 + ft_strlen(var_extend));
-			//ft_printf("aa %s\n", *s);
-		}
+		if (is_single_dollar_sign(dollar_pos))
+			dollar_pos++;
 		else
-			*s = ft_strreplace(*s, var_extend, value);
-		//ft_printf("%s\n", *s);
-		free(temp);
-		free(var_extend);
+		{
+			var_extend = get_var_extend(dollar_pos);
+			if (var_extend)
+			{
+				value = ft_strdup(get_env(shell, var_extend + 1));
+				temp = *s;
+				*s = ft_strreplace(*s, var_extend, value);
+				free(var_extend);
+				ft_free_int(value);
+				ft_free_int(temp);
+			}
+			dollar_pos = ft_strchr(*s, '$');
+		}
 	}
 }
 
@@ -105,7 +111,8 @@ void		handle_input(t_shell *shell,t_dlist *allocated, char **s)
 {
 	clear_cmd_args(&shell->cmd);
 	replace_env_variables(shell, s);
-	do_trim(s);
+	if (*s && (*s)[0])
+		do_trim(s);
 	(void)allocated;
 	
 }
