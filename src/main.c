@@ -75,3 +75,16 @@ int			main()
 	exit(0);
 	return (0);
 }
+
+/*
+doesnt work:
+/bin/ls
+
+$> echo "it works"
+"it works"
+
+$> echo it works
+it works
+
+
+

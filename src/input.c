@@ -12,11 +12,6 @@
 
 #include "minishell.h"
 
-char				ft_getchar()
-{
-	return (0);
-}
-
 void		init_cmd(t_dlist *cmd)
 {
 	t_dlist	*tokens;
@@ -51,7 +46,7 @@ int			is_single_dollar_sign(char *s)
 {
 	if (!s || !s[0])
 		return (0);
-	if (!is_space_tab(*(s + 1)))
+	if (s[1] && !is_space_tab(*(s + 1)))
 		return (0);
 	return (1);
 }
@@ -60,43 +55,54 @@ char		*get_var_extend(char *s)
 {
 	int		i;
 
-	i = 0;
 	if (!s || !s[0])
 		return (NULL);
-	while (s[1 + i] && !is_space_tab(s[1 + i]))
+	i = 1;
+	while (s[i] && !is_space_tab(s[i]) && s[i] != '$')
 		i++;
-	if (!i)
-		return (NULL);
-	return (ft_strndup(s, i + 1));
+	return (ft_strndup(s, i));
 }
 
-void		replace_env_variables(t_shell *shell, char **s)
+void		replace_variable(t_shell *shell, t_buffer *buf, char **curr, char *dollar_pos)
 {
-	char	*dollar_pos;
 	char	*var_extend;
 	char	*value;
-	char	*temp;
 
+	var_extend = get_var_extend(dollar_pos);
+	if (var_extend)
+	{
+		value = get_env(shell, var_extend + 1);
+		t_buffer_write(buf, value);
+		*curr = dollar_pos + ft_strlen(var_extend);
+		free(var_extend);
+	}
+}
+
+void		replace_env_variables1(t_shell *shell, char **s)
+{
+	t_buffer	*buf;
+	char	*dollar_pos;
+	char	*curr;
+
+	buf = t_buffer_create(1);
 	dollar_pos = ft_strchr(*s, '$');
+	curr = *s;
 	while (dollar_pos)
 	{
+		t_buffer_writen(buf, curr, dollar_pos - curr);
 		if (is_single_dollar_sign(dollar_pos))
-			dollar_pos++;
-		else
 		{
-			var_extend = get_var_extend(dollar_pos);
-			if (var_extend)
-			{
-				value = ft_strdup(get_env(shell, var_extend + 1));
-				temp = *s;
-				*s = ft_strreplace(*s, var_extend, value);
-				free(var_extend);
-				ft_free_int(value);
-				ft_free_int(temp);
-			}
-			dollar_pos = ft_strchr(*s, '$');
+			t_buffer_add_char(buf, '$');
+			curr = dollar_pos + 1;
 		}
+		else
+			replace_variable(shell, buf, &curr, dollar_pos);
+		dollar_pos = ft_strchr(curr, '$');
 	}
+	t_buffer_write(buf, curr);
+	free(*s);
+	*s = ft_strdup(buf->s);
+	t_buffer_free(&buf);
 }
 
 void		clear_cmd_args(t_curr_cmd *cmd)
@@ -110,7 +116,7 @@ void		clear_cmd_args(t_curr_cmd *cmd)
 void		handle_input(t_shell *shell,t_dlist *allocated, char **s)
 {
 	clear_cmd_args(&shell->cmd);
-	replace_env_variables(shell, s);
+	replace_env_variables1(shell, s);
 	if (*s && (*s)[0])
 		do_trim(s);
 	(void)allocated;
