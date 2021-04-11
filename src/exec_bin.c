@@ -6,31 +6,11 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/03/20 19:52:35 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/11 14:01:30 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static char			**get_argv_from_s(const char* program, const char* arg)
-{
-	char			*temp;
-	char			**splitted;
-
-	if (arg)
-	{
-		temp = ft_strnew(ft_strlen(program) + 1 + ft_strlen(arg));
-		ft_strcpy(temp, program);
-		ft_strcat(temp, " ");
-    	ft_strcat(temp, arg);
-	}
-	else
-		temp = (char *)program;
-	//ft_printf("%s\n", temp);
-	splitted = ft_strsplit(temp, ' ');
-	free(temp);
-	return (splitted);
-}
 
 int				is_file_exists(const char* filename)
 {
@@ -54,32 +34,32 @@ void	get_dir_execs(char *dir_path)
 
 
 
-void run(const char* program, const char* arg)
+void run(t_shell *shell)
 {
 	char	**argv;
 	pid_t	pid;
 	int		state;
-	extern char	**environ;
-	char		*program_path;
+	char	**environ;
+	char	*program_path;
 	
-	//ft_printf("%s\n", program);
+	argv = get_argv(&shell->cmd);
+	environ = get_environ(shell);
 	program_path = NULL;
 	pid = fork();
 	if (pid == -1)
 		exit(ft_printf("error\n"));
 	if (!pid)
 	{
-		program_path = NULL; //get_exec_path(program, environ);
-		argv = get_argv_from_s(program, arg);
+		program_path = get_program_path(shell, argv[0]);
 		if (!program_path || -1 == execve(argv[0], argv, environ)) 
 			ft_printf("%s: %s: %s\n", SHELL_NAME, MSG_CMD_NOT_FOUND, argv[0]);
-		free_2dchararr_terminated(argv);
 		exit(EXIT_SUCCESS);
 	}
 	else
-	{
 		waitpid(pid, &state, 0);
-	}
+	free(program_path);
+	free_2dchararr_terminated(argv);
+	free_2dchararr_terminated(environ);
 	//(WIFSIGNALED(state)) ? shell_print_signal(WTERMSIG(state)) : 0;
 }
 
@@ -137,7 +117,7 @@ int				exec_command(t_shell *shell)
 	else if (ft_strequ(s, "type"))
 		do_type(shell->cmd);
 	else
-		run(shell->cmd.cmd, shell->cmd.args);
+		run(shell);
 	return (0);
 }
 

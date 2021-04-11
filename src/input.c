@@ -6,21 +6,13 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/03/20 19:55:36 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/11 12:31:24 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void		init_cmd(t_dlist *cmd)
-{
-	t_dlist	*tokens;
 
-	tokens = t_dlist_new();
-	
-	t_dlist_append(cmd, t_dlist_node_new(tokens, sizeof(t_dlist *)));
-	t_dlist_append(tokens, t_dlist_node_new(t_buffer_create(0), sizeof(t_buf *)));
-}
 
 t_input		*t_input_new(void)
 {
@@ -78,7 +70,7 @@ void		replace_variable(t_shell *shell, t_buffer *buf, char **curr, char *dollar_
 	}
 }
 
-void		replace_env_variables1(t_shell *shell, char **s)
+void		replace_env_variables(t_shell *shell, char **s)
 {
 	t_buffer	*buf;
 	char	*dollar_pos;
@@ -105,23 +97,18 @@ void		replace_env_variables1(t_shell *shell, char **s)
 	t_buffer_free(&buf);
 }
 
-void		clear_cmd_args(t_curr_cmd *cmd)
-{
-	cmd->args ? free(cmd->args) : 0;
-	cmd->cmd ? free(cmd->cmd) : 0;
-	ft_bzero(cmd, sizeof(t_curr_cmd));
-}
-
-
 void		handle_input(t_shell *shell,t_dlist *allocated, char **s)
 {
 	clear_cmd_args(&shell->cmd);
-	replace_env_variables1(shell, s);
+	replace_env_variables(shell, s);
 	if (*s && (*s)[0])
 		do_trim(s);
 	(void)allocated;
 	
 }
+
+
+
 
 /*
 void				handle_input(t_shell *shell)

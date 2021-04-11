@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/03/20 19:55:20 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/11 14:01:50 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int 			exec_prog(const char* program, const char* arg);
 int				do_exit();
 int				do_echo(t_curr_cmd cmd);
 int				exec_command(t_shell *shell);
-void run(const char* program, const char* arg);
+void			run(t_shell *shell);
 
 /*
 ** quotation.c
@@ -152,4 +152,15 @@ void		add_token(t_input *input, char *s, int i);
 */
 t_shell		*t_shell_new(void);
 void		update_exec_table(t_shell *shell);
+
+/*
+** cmd.c
+*/
+char		**get_argv(t_curr_cmd *cmd);
+void		clear_cmd_args(t_curr_cmd *cmd);
+
+/*
+** path.c
+*/
+char	*get_program_path(t_shell *shell, char *program_name);
 #endif

@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/03/20 21:22:15 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/11 13:38:29 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,35 +43,6 @@ char		**get_path_tokens(char *path)
 	free_2dchararr_terminated(splitted);
 	return (path_tokens);
 }
-
-/*
-t_dlist				*get_tokens(char *path)
-{
-	char			**splitted;
-	t_dlist			*path_tokens;
-	t_dlist			*head;
-
-	splitted = ft_strsplit(path, '/');
-	path_tokens = t_dlist_new();
-	head = path_tokens;
-	t_dlist_append(path_tokens, t_dlist_node_new(ft_strdup("/"), sizeof(char *)));
-	while (*splitted)
-	{
-		if (ft_strequ(".", *splitted))
-			continue ;
-		if (ft_strequ("..", *splitted))
-		{
-			if (head->head != head->tail)
-				t_dlist_pop(path_tokens, path_tokens->tail);
-			continue ;
-		}
-		t_dlist_append(path_tokens,
-		t_dlist_node_new(ft_strdup(*splitted), sizeof(char *)));
-		splitted++;
-	}
-	return (head);
-}
-*/
 
 int					check_dir(char *dir_name, char **error, char *origin_path)
 {
@@ -193,7 +164,6 @@ char		*create_relative_path(t_shell *shell, char *path)
 	return (relative);
 }
 
-//cd - or cd ~- or cd $OLD_PWD
 char		*create_path(t_shell *shell, char *s)
 {
 	char	*path;
@@ -232,7 +202,8 @@ int			do_cd(t_shell *shell, char *s)
 	free(temp);
 	if (pwd)
 	{
-		set_env(shell, ft_strdup(ENV_OLDPWD), ft_strdup(get_env(shell, ENV_PWD)));
+		set_env(shell, ft_strdup(ENV_OLDPWD),
+			ft_strdup(get_env(shell, ENV_PWD)));
 		set_env(shell, ft_strdup(ENV_PWD), pwd);
 	}
 	return (1);

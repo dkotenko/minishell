@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/03/20 19:53:08 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/11 13:34:26 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,6 @@ char		**get_environ(t_shell *shell)
 	free(env_arr);
 	return (env);
 }
-
-
-
 
 void		do_env(t_shell *shell)
 {
