@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/04/11 14:22:46 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/11 18:34:15 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void				add_dir_execs(t_htable *t, char *dir_path)
 		if (ft_strequ(s_d->d_name, "..") || ft_strequ(s_d->d_name, "."))
 			continue ;
 		curr_exec = ft_strdup(s_d->d_name);
-		
+		//ft_printf("%s\n",curr_exec);
 		fullpath = join_3_strings(dir_path, "/", curr_exec);
 		//ft_printf("%s %s %s\n", dir_path, curr_exec, fullpath);
 		if (stat(fullpath, &s_stat) == 0 && s_stat.st_mode & S_IXUSR &&
@@ -86,6 +86,7 @@ void			handle_exec_table(t_shell *shell, t_htable *t)
 		temp++;
 	}
 	free_2dchararr_terminated(splitted_path);
+	exit(0);
 }
 
 void		update_exec_table(t_shell *shell)
@@ -112,10 +113,15 @@ char	*get_program_path(t_shell *shell, char *program_name)
 	
 	int i = 0;
 	while (a[i])
-		ft_putendl(a[i++]);
+	{
+		//if (ft_strequ(a[i], program_name))
+			ft_putendl(a[i]);	
+		i++;
+	}
 	*/
+
 	program_path = t_htable_get(shell->executables, program_name);
-	ft_printf("%s\n", program_path);
+	ft_printf("keys from table %s %s\n", program_name, program_path);
 	exit(0);
 	ft_putendl(program_path);
 	exit(0);
