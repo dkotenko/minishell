@@ -32,7 +32,7 @@ char			*join_3_strings(char *s1, char *s2, char *s3)
 //unix ищет файл во всех папках с начала до конца, запускает первый
 //ищет имя в таблица, далее пытается запустить (доступ/запуск). Нет прав ? пишет zsh: command not found: prog
 
-void				add_dir_execs(t_htable *t, char *dir_path)
+void				add_dir_execs(t_shell *shell, char *dir_path)
 {
 	char			*curr_exec;
 	char			*fullpath;
@@ -58,7 +58,7 @@ void				add_dir_execs(t_htable *t, char *dir_path)
 		{
 			//(void)t;
 			//ft_printf("%s %d %s\n", s_d->d_name, errno, strerror(errno));
-			t_htable_set(&t, curr_exec, fullpath);
+			t_htable_set(&shell->executables, curr_exec, fullpath);
 			//ft_printf("key:%s value:%s\n", curr_exec, t_htable_get(t, curr_exec));
 		}
 		else
@@ -70,7 +70,7 @@ void				add_dir_execs(t_htable *t, char *dir_path)
 	closedir(dir);
 }
 
-void			handle_exec_table(t_shell *shell, t_htable *t)
+void			handle_exec_table(t_shell *shell)
 {
 	char		**splitted_path;
 	char		*path;
@@ -82,11 +82,11 @@ void			handle_exec_table(t_shell *shell, t_htable *t)
 	temp = splitted_path;
 	while (*temp)
 	{
-		add_dir_execs(t, *temp);
+		add_dir_execs(shell, *temp);
 		temp++;
 	}
+	//print_keys(shell->executables);
 	free_2dchararr_terminated(splitted_path);
-	exit(0);
 }
 
 void		update_exec_table(t_shell *shell)
@@ -99,7 +99,21 @@ void		update_exec_table(t_shell *shell)
 	ft_free_int(shell->path_var);
 	shell->path_var = ft_strdup(curr_path);
 	t_htable_clean_all(shell->executables);
-	handle_exec_table(shell, shell->executables);
+	handle_exec_table(shell);
+}
+
+void	print_keys(t_htable *table)
+{
+	
+	char **a = (char **)t_htable_get_keys(table);
+	
+	int i = 0;
+	while (a[i])
+	{
+		ft_putendl(a[i]);	
+		i++;
+	}
+	free_2dchararr_terminated(a);
 }
 
 char	*get_program_path(t_shell *shell, char *program_name)
@@ -107,23 +121,9 @@ char	*get_program_path(t_shell *shell, char *program_name)
 	char	*program_path;
 
 	update_exec_table(shell);
-	//ft_putendl(program_name);
-	/*
-	char **a = (char **)t_htable_get_keys(shell->executables);
-	
-	int i = 0;
-	while (a[i])
-	{
-		//if (ft_strequ(a[i], program_name))
-			ft_putendl(a[i]);	
-		i++;
-	}
-	*/
-
 	program_path = t_htable_get(shell->executables, program_name);
-	ft_printf("keys from table %s %s\n", program_name, program_path);
-	exit(0);
-	ft_putendl(program_path);
-	exit(0);
-	return (ft_strdup(program_path));
+	if (!program_path)
+		return (NULL);
+	else
+		return (ft_strdup(program_path));
 }

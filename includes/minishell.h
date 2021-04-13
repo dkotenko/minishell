@@ -156,11 +156,12 @@ void		update_exec_table(t_shell *shell);
 /*
 ** cmd.c
 */
-char		**get_argv(t_curr_cmd *cmd);
+char		**get_argv(t_shell *shell, t_curr_cmd *cmd);
 void		clear_cmd_args(t_curr_cmd *cmd);
 
 /*
 ** path.c
 */
+void	print_keys(t_htable *table);
 char	*get_program_path(t_shell *shell, char *program_name);
 #endif

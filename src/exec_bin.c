@@ -40,24 +40,21 @@ void run(t_shell *shell)
 	pid_t	pid;
 	int		state;
 	char	**environ;
-	char	*program_path;
-	
-	argv = get_argv(&shell->cmd);
+
 	environ = get_environ(shell);
-	program_path = NULL;
+	argv = get_argv(shell, &shell->cmd);
 	pid = fork();
 	if (pid == -1)
-		exit(ft_printf("error\n"));
+		exit(ft_printf("fork error\n"));
 	if (!pid)
 	{
-		program_path = get_program_path(shell, argv[0]);
-		if (!program_path || -1 == execve(argv[0], argv, environ)) 
+		print_2dchararr_terminated(argv);
+		if (!argv[0] || -1 == execve(argv[0], argv, environ)) 
 			ft_printf("%s: %s: %s\n", SHELL_NAME, MSG_CMD_NOT_FOUND, argv[0]);
 		exit(EXIT_SUCCESS);
 	}
 	else
 		waitpid(pid, &state, 0);
-	free(program_path);
 	free_2dchararr_terminated(argv);
 	free_2dchararr_terminated(environ);
 	//(WIFSIGNALED(state)) ? shell_print_signal(WTERMSIG(state)) : 0;
