@@ -14,7 +14,7 @@
 
 
 
-char		**get_environ(t_shell *shell)
+char	**get_environ(t_shell *shell)
 {
 	char	**env;
 	char	***env_arr;
@@ -37,7 +37,7 @@ char		**get_environ(t_shell *shell)
 	return (env);
 }
 
-void		do_env(t_shell *shell)
+void	do_env(t_shell *shell)
 {
 	int		i;
 	char	**environ;
@@ -56,7 +56,9 @@ void		do_env(t_shell *shell)
 	free_2dchararr_terminated(environ);
 }
 
-int			do_environ(t_shell *shell)
+
+
+int		do_environ(t_shell *shell)
 {
 	if (ft_strequ(shell->cmd.cmd, "env"))
 		do_env(shell);

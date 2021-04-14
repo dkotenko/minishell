@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int			is_valid_spaces(char *args)
+int	is_valid_spaces(char *args)
 {
 	char	*n1;
 	char	*n2;
@@ -37,7 +37,7 @@ int			is_valid_spaces(char *args)
 	return (1);
 }
 
-int			is_valid_args(char *args)
+int is_valid_args(char *args)
 {
 	char	*eq;
 
@@ -50,7 +50,7 @@ int			is_valid_args(char *args)
 	return (1);
 }
 
-char		**get_key_val(char *s)
+char **get_key_val(char *s)
 {
 	char	**key_val;
 	char	*key;
@@ -68,7 +68,7 @@ char		**get_key_val(char *s)
 	return (key_val);
 }
 
-void		do_setenv(t_shell *shell)
+void	do_setenv(t_shell *shell)
 {
 	char	**key_val;
 	
@@ -79,13 +79,13 @@ void		do_setenv(t_shell *shell)
 	free(key_val);
 }
 
-int			set_env(t_shell *shell, char *key, char *value)
+int	set_env(t_shell *shell, char *key, char *value)
 {
 	
 	return (t_htable_set(&shell->env, key, value));
 }
 
-char		*get_env(t_shell *shell, char *key)
+char	*get_env(t_shell *shell, char *key)
 {
 	return (t_htable_get(shell->env, key));
 }

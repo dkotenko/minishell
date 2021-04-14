@@ -48,7 +48,6 @@ void run(t_shell *shell)
 		exit(ft_printf("fork error\n"));
 	if (!pid)
 	{
-		print_2dchararr_terminated(argv);
 		if (!argv[0] || -1 == execve(argv[0], argv, environ)) 
 			ft_printf("%s: %s: %s\n", SHELL_NAME, MSG_CMD_NOT_FOUND, argv[0]);
 		exit(EXIT_SUCCESS);
@@ -108,7 +107,7 @@ int				exec_command(t_shell *shell)
 	else if (ft_strequ(s, "echo"))
 		do_echo(shell->cmd);
 	else if (ft_strequ(s, "cd"))
-		do_cd(shell, s);
+		do_cd(shell);
 	else if (ft_strequ(s, "pwd"))
 		do_pwd(shell, shell->cmd);
 	else if (ft_strequ(s, "type"))

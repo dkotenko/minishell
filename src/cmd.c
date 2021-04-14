@@ -48,20 +48,39 @@ static char	**cmd_to_argv(t_curr_cmd *cmd)
 		argv[1 + i] = ft_strdup(args[i]);
 		i++;
 	}
-	free_2dchararr_terminated(args);
+	if (args)
+		free_2dchararr_terminated(args);
 	return (argv);
 }
-
 
 char	**get_argv(t_shell *shell, t_curr_cmd *cmd)
 {
 	char	**argv;
+	char	*path;
 
 	argv = cmd_to_argv(cmd);
 	if (cmd->cmd[0] != '/')
 	{
-		free(argv[0]);
-		argv[0] = get_program_path(shell, cmd->cmd);
+		path = get_program_path(shell, cmd->cmd);
+		if (path)
+		{
+			free(argv[0]);
+			argv[0] = path;
+		}
 	}
 	return (argv);
+}
+
+char	*get_first_arg(t_curr_cmd *cmd)
+{
+	char	*args;
+	char	*space_pos;
+
+	args = cmd->args;
+	if (!args)
+		return (NULL);
+	space_pos = ft_strchr(args, ' ');
+	if (!space_pos)
+		return (ft_strdup(args));
+	return (ft_strndup(args, space_pos - args));
 }

@@ -102,7 +102,7 @@ int				handle_error(char *s);
 /*
 ** do_cd.c
 */
-int				do_cd(t_shell *shell, char *s);
+int				do_cd(t_shell *shell);
 int				is_cd_command(char *s);
 
 
@@ -158,10 +158,22 @@ void		update_exec_table(t_shell *shell);
 */
 char		**get_argv(t_shell *shell, t_curr_cmd *cmd);
 void		clear_cmd_args(t_curr_cmd *cmd);
+char	*get_first_arg(t_curr_cmd *cmd);
 
 /*
 ** path.c
 */
 void	print_keys(t_htable *table);
 char	*get_program_path(t_shell *shell, char *program_name);
+
+void	signal_handler(int signo);
+void	proc_signal_handler(int signo);
+
+/*
+** do_cd_aux.c
+*/
+char		**get_path_tokens(char *path);
+int					check_dir(char *dir_name, char **error, char *origin_path);
+char		*join_2darr(char **arr, char *sep);
+int			is_tokens_valid(char **path_tokens, char *origin_path);
 #endif

@@ -21,6 +21,7 @@
 # define SHELL_NAME "minishell"
 # define BUILTIN_LIST "exit env setenv unsetenv echo cd pwd type"
 # define CHAR_BUFF_SIZE 1
+# define PROMPT "$>"
 
 enum			token_type
 {

@@ -61,9 +61,10 @@ int			main()
 	char	*s;
 
 	shell = t_shell_new();
-	signal (SIGINT, &interrupt); //в функции interrupt надо убить форк запущенного процесса
+	//signal (SIGINT, &interrupt); //в функции interrupt надо убить форк запущенного процесса
+	signal(SIGINT, signal_handler);
 	s = shell->s;
-	while (ft_printf("$> ") && get_next_line(STDIN_FILENO, &s))
+	while (ft_printf("%s ", PROMPT) && get_next_line(STDIN_FILENO, &s))
 	{
 		if (!ft_strlen(s) && ft_free_int(s))
 			continue ;

@@ -22,7 +22,9 @@ ALL_C =	main.c \
 		environ_methods.c \
 		init.c \
 		path.c \
-		cmd.c
+		cmd.c \
+		do_cd_aux.c \
+		do_cd_check_dir.c
 
 SRCDIR = ./src
 OBJDIR = ./objs

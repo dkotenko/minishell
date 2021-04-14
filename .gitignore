@@ -53,3 +53,7 @@ dkms.conf
 
 # Binary
 minishell
+
+# IDEs
+.idea
+.vscode
