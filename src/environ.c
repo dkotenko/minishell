@@ -58,7 +58,7 @@ void	do_env(t_shell *shell)
 
 
 
-int		do_environ(t_shell *shell)
+int	do_environ(t_shell *shell)
 {
 	if (ft_strequ(shell->cmd.cmd, "env"))
 		do_env(shell);

@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-char			*join_3_strings(char *s1, char *s2, char *s3)
+char	*join_3_strings(char *s1, char *s2, char *s3)
 {
 	char		*joined;
 	int			len_1;
@@ -32,7 +32,7 @@ char			*join_3_strings(char *s1, char *s2, char *s3)
 //unix ищет файл во всех папках с начала до конца, запускает первый
 //ищет имя в таблица, далее пытается запустить (доступ/запуск). Нет прав ? пишет zsh: command not found: prog
 
-void				add_dir_execs(t_shell *shell, char *dir_path)
+void	add_dir_execs(t_shell *shell, char *dir_path)
 {
 	char			*curr_exec;
 	char			*fullpath;
@@ -70,7 +70,7 @@ void				add_dir_execs(t_shell *shell, char *dir_path)
 	closedir(dir);
 }
 
-void			handle_exec_table(t_shell *shell)
+void	handle_exec_table(t_shell *shell)
 {
 	char		**splitted_path;
 	char		*path;
@@ -89,7 +89,7 @@ void			handle_exec_table(t_shell *shell)
 	free_2dchararr_terminated(splitted_path);
 }
 
-void		update_exec_table(t_shell *shell)
+void	update_exec_table(t_shell *shell)
 {
 	char	*curr_path;
 

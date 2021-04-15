@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void		parse_system_environ(t_shell *shell)
+void	parse_system_environ(t_shell *shell)
 {
 	int		i;
 	char	**splitted;

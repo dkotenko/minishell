@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int			is_quote_bs_status(int status)
+int	is_quote_bs_status(int status)
 {
 	if (status == INPUT_STATUS_STRONG_QUOTE ||
 		status == INPUT_STATUS_WEAK_QUOTE ||
@@ -21,7 +21,7 @@ int			is_quote_bs_status(int status)
 	return (0);
 }
 
-void		handle_tabs_and_spaces(char **s)
+void	handle_tabs_and_spaces(char **s)
 {
 	char	*temp;
 
@@ -30,14 +30,14 @@ void		handle_tabs_and_spaces(char **s)
 	free(temp);
 }
 
-int			is_space_tab(int c)
+int	is_space_tab(int c)
 {
 	if (c == '\t'|| c == ' ')
 		return (1);
 	return (0);
 }
 
-int			is_empty_string(char *s)
+int	is_empty_string(char *s)
 {
 	int		i;
 
@@ -50,7 +50,7 @@ int			is_empty_string(char *s)
 	return (1);
 }
 
-int			here(void)
+int	here(void)
 {
 	ft_printf("here\n");
 	return (1);

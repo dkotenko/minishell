@@ -38,7 +38,7 @@ void	signal_handler(int signo)
 	}
 }
 
-void		interrupt(int signal)
+void	interrupt(int signal)
 {
 	if (signal == SIGINT)
 	{

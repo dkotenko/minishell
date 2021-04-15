@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void		separate_cmd_args(t_shell *shell, char *s)
+void	separate_cmd_args(t_shell *shell, char *s)
 {
 	t_curr_cmd	cmd;
 	char	*space_pos;
@@ -32,7 +32,7 @@ void		separate_cmd_args(t_shell *shell, char *s)
 	shell->cmd = cmd;
 }
 
-int			handle_every_command(t_shell *shell, char **splitted)
+int	handle_every_command(t_shell *shell, char **splitted)
 {
 	int		i;
 	char	*temp;
@@ -54,7 +54,7 @@ int			handle_every_command(t_shell *shell, char **splitted)
 	return (1);
 }
 
-int			main()
+int	main()
 {
 	t_shell	*shell;
 	char	**splitted;

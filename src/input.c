@@ -25,7 +25,7 @@ t_input		*t_input_new(void)
 	return (new);
 }
 
-void		do_trim(char **s)
+void	do_trim(char **s)
 {
 	char	*temp;
 
@@ -34,7 +34,7 @@ void		do_trim(char **s)
 	free(temp);
 }
 
-int			is_single_dollar_sign(char *s)
+int	is_single_dollar_sign(char *s)
 {
 	if (!s || !s[0])
 		return (0);
@@ -43,7 +43,7 @@ int			is_single_dollar_sign(char *s)
 	return (1);
 }
 
-char		*get_var_extend(char *s)
+char	*get_var_extend(char *s)
 {
 	int		i;
 
@@ -55,7 +55,7 @@ char		*get_var_extend(char *s)
 	return (ft_strndup(s, i));
 }
 
-void		replace_variable(t_shell *shell, t_buffer *buf, char **curr, char *dollar_pos)
+void	replace_variable(t_shell *shell, t_buffer *buf, char **curr, char *dollar_pos)
 {
 	char	*var_extend;
 	char	*value;
@@ -70,7 +70,7 @@ void		replace_variable(t_shell *shell, t_buffer *buf, char **curr, char *dollar_
 	}
 }
 
-void		replace_env_variables(t_shell *shell, char **s)
+void	replace_env_variables(t_shell *shell, char **s)
 {
 	t_buffer	*buf;
 	char	*dollar_pos;
@@ -97,7 +97,7 @@ void		replace_env_variables(t_shell *shell, char **s)
 	t_buffer_free(&buf);
 }
 
-void		handle_input(t_shell *shell,t_dlist *allocated, char **s)
+void	handle_input(t_shell *shell,t_dlist *allocated, char **s)
 {
 	clear_cmd_args(&shell->cmd);
 	replace_env_variables(shell, s);
@@ -111,7 +111,7 @@ void		handle_input(t_shell *shell,t_dlist *allocated, char **s)
 
 
 /*
-void				handle_input(t_shell *shell)
+void	handle_input(t_shell *shell)
 {
 	char			c;   
 	struct termios	oldt;

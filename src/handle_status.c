@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void		set_status(t_input *input, int status)
+void	set_status(t_input *input, int status)
 {
 	input->status = status;
 }
@@ -30,7 +30,7 @@ static void	set_another_input_status(t_input *input, char c)
 	
 }
 
-void		set_input_status(t_input *input, char c)
+void	set_input_status(t_input *input, char c)
 {
 	if (c == ';' && !is_quote_bs_status(input->status))
 		input->status = INPUT_STATUS_SEMICOLON;
@@ -58,7 +58,7 @@ void		set_input_status(t_input *input, char c)
 }
 
 
-void		handle_status_space_tab(t_input *input, char *s, int i)
+void	handle_status_space_tab(t_input *input, char *s, int i)
 {
 	if (s + input->buf->i == input->start_token)
 		return ;
@@ -66,12 +66,12 @@ void		handle_status_space_tab(t_input *input, char *s, int i)
 		add_token(input, s, i);
 }
 
-void		handle_status_next_line(t_input *input, char *s, int *i)
+void	handle_status_next_line(t_input *input, char *s, int *i)
 {
 	add_token(input, s, *i);
 }
 
-void		handle_status_variable(t_shell *shell, char *s, int *i)
+void	handle_status_variable(t_shell *shell, char *s, int *i)
 {
 	int		start;
 	char	*variable_name;
@@ -103,7 +103,7 @@ void		handle_status_variable(t_shell *shell, char *s, int *i)
 }
 
 /*
-void		handle_status_semicolon(t_input *input, char *s)
+void	handle_status_semicolon(t_input *input, char *s)
 {
 	char	*new;
 	int		len;
@@ -118,7 +118,7 @@ void		handle_status_semicolon(t_input *input, char *s)
 */
 
 
-void		add_token(t_input *input, char *s, int i)
+void	add_token(t_input *input, char *s, int i)
 {
 	char		*to_token;
 	t_dlist		*curr_tokens;
@@ -133,7 +133,7 @@ void		add_token(t_input *input, char *s, int i)
 	input->start_token = s + i + 1;
 }
 
-void		handle_status_weak_quote(t_input *input, char *s)
+void	handle_status_weak_quote(t_input *input, char *s)
 {
 	(void)input;
 	(void)s;
@@ -156,7 +156,7 @@ void		handle_status_weak_quote(t_input *input, char *s)
 **
 **	c - char after backslash
 */
-char		get_escape_sequence(char c)
+char	get_escape_sequence(char c)
 {
 	char	esc;
 
@@ -178,7 +178,7 @@ char		get_escape_sequence(char c)
 
 
 
-void		create_tokens(t_shell *shell, char *s)
+void	create_tokens(t_shell *shell, char *s)
 {
 	int		i;
 	int		status;

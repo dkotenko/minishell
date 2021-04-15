@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int			is_quote(char c)
+int	is_quote(char c)
 {
 	if (c == SYMBOL_DOUBLE_QUOTE ||
 		c == SYMBOL_SINGLE_QUOTE ||
@@ -22,7 +22,7 @@ int			is_quote(char c)
 }
 
 /*
-int			print_entry_quote(t_quote_info *q_info)
+int	print_entry_quote(t_quote_info *q_info)
 {
 	if (q_info->q_symbol == SYMBOL_SINGLE_QUOTE)
 		ft_printf("quote> ");
@@ -33,7 +33,7 @@ int			print_entry_quote(t_quote_info *q_info)
 	return (1);
 }
 
-void				set_quote_info(t_quote_info *q_info, char c, int *print_symbol_flag)
+void	set_quote_info(t_quote_info *q_info, char c, int *print_symbol_flag)
 {
 	
 	if (q_info->q_flag == false)
@@ -54,7 +54,7 @@ void				set_quote_info(t_quote_info *q_info, char c, int *print_symbol_flag)
 }
 
 
-void				handle_quote_line(t_quote_info *q_info, char *s)
+void	handle_quote_line(t_quote_info *q_info, char *s)
 {
 	
 	int				i;
@@ -82,7 +82,7 @@ void				handle_quote_line(t_quote_info *q_info, char *s)
 	free(new);
 }
 
-void				handle_quotes(char **input_string)
+void	handle_quotes(char **input_string)
 {
 	char			*s;
 	t_quote_info	q_info;

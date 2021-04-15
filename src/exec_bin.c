@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int				is_file_exists(const char* filename)
+int	is_file_exists(const char* filename)
 {
 	struct stat	s_buffer;
 	
@@ -20,7 +20,7 @@ int				is_file_exists(const char* filename)
 }
 
 /*
-int				is_file_access(char *filename, int access_type)
+int	is_file_access(char *filename, int access_type)
 {
     return (access(filename, access_type ) == -1); //X_OK
 }
@@ -59,13 +59,13 @@ void run(t_shell *shell)
 	//(WIFSIGNALED(state)) ? shell_print_signal(WTERMSIG(state)) : 0;
 }
 
-void			do_pwd(t_shell *shell, t_curr_cmd cmd)
+void	do_pwd(t_shell *shell, t_curr_cmd cmd)
 {
 	cmd.args = get_env(shell, ENV_PWD);
 	do_echo(cmd);
 }
 
-int				is_builtin(char *name)
+int	is_builtin(char *name)
 {
 	char		*start;
 	int			name_len;
@@ -76,7 +76,7 @@ int				is_builtin(char *name)
 	return (is_space_tab(*(start + name_len)) || !*(start + name_len));
 }
 
-void			do_type(t_curr_cmd cmd)
+void	do_type(t_curr_cmd cmd)
 {
 	(void)cmd;
 	/*
@@ -92,7 +92,7 @@ echo is a shell builtin
 
 
 
-int				exec_command(t_shell *shell)
+int	exec_command(t_shell *shell)
 {
 	char	*s;
 
@@ -117,7 +117,7 @@ int				exec_command(t_shell *shell)
 	return (0);
 }
 
-int			do_echo(t_curr_cmd cmd)
+int	do_echo(t_curr_cmd cmd)
 {
 	if (cmd.args)
 		ft_printf("%s");
