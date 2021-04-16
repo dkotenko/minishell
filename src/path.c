@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/04/16 23:53:05 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/17 00:07:43 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ unix ищет файл во всех папках с начала до конц�
 ищет имя в таблица, далее пытается запустить (доступ/запуск). 
 Нет прав ? пишет zsh: command not found: prog
 */
-
+/*
 static void	handle_struct_direct(t_shell *shell, struct dirent	*s_d,
 struct stat *s_stat, char *dir_path)
 {
@@ -36,6 +36,7 @@ struct stat *s_stat, char *dir_path)
 	}
 }
 
+
 void	add_dir_execs(t_shell *shell, char *dir_path)
 {	
 	struct stat		s_stat;
@@ -53,6 +54,44 @@ void	add_dir_execs(t_shell *shell, char *dir_path)
 			continue ;
 		handle_struct_direct(shell, s_d, &s_stat, dir_path);
 		s_d = readdir(dir);
+	}
+	closedir(dir);
+}
+*/
+void				add_dir_execs(t_shell *shell, char *dir_path)
+{
+	char			*curr_exec;
+	char			*fullpath;
+	struct stat		s_stat;
+	DIR				*dir;
+	struct dirent	*s_d;
+	
+	if (stat(dir_path, &s_stat) == -1 ||
+		!S_ISDIR(s_stat.st_mode) ||
+		access(dir_path, R_OK) == -1)
+		return ;
+	dir = opendir(dir_path);
+	while ((s_d = readdir(dir)) != NULL)
+	{
+		if (ft_strequ(s_d->d_name, "..") || ft_strequ(s_d->d_name, "."))
+			continue ;
+		curr_exec = ft_strdup(s_d->d_name);
+		//ft_printf("%s\n",curr_exec);
+		fullpath = join_3_strings(dir_path, "/", curr_exec);
+		//ft_printf("%s %s %s\n", dir_path, curr_exec, fullpath);
+		if (stat(fullpath, &s_stat) == 0 && s_stat.st_mode & S_IXUSR &&
+		!access(fullpath, R_OK))
+		{
+			//(void)t;
+			//ft_printf("%s %d %s\n", s_d->d_name, errno, strerror(errno));
+			t_htable_set(&shell->executables, curr_exec, fullpath);
+			//ft_printf("key:%s value:%s\n", curr_exec, t_htable_get(t, curr_exec));
+		}
+		else
+		{
+			free(fullpath);
+			free(curr_exec);
+		}
 	}
 	closedir(dir);
 }

@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/04/16 23:43:37 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/17 00:01:31 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,10 @@ int	main()
 	//signal (SIGINT, &interrupt); //в функции interrupt надо убить форк запущенного процесса
 	signal(SIGINT, signal_handler);
 	s = shell->s;
+	
 	while (ft_printf("%s ", PROMPT) && get_next_line(STDIN_FILENO, &s))
 	{
+		here();
 		if (!ft_strlen(s) && ft_free_int(s))
 			continue ;
 		splitted = ft_strsplit(s, ';');
