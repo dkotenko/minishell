@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/03/07 19:46:34 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/16 23:39:02 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ void	signal_handler(int signo)
 	if (signo == SIGINT)
 	{
 		ft_putstr("\n");
-		//display_prompt_msg();
 		signal(SIGINT, signal_handler);
 	}
 }

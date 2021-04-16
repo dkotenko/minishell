@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/04/11 14:01:50 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/16 23:53:34 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,11 @@ typedef struct s_shell
 }				t_shell;
 
 /*
+** main.c
+*/
+char	*join_3_strings(char *s1, char *s2, char *s3);
+
+/*
 ** exec_bin.c
 */
 void			exec_bin(void);
@@ -83,12 +88,6 @@ int				do_exit(void);
 int				do_echo(t_curr_cmd cmd);
 int				exec_command(t_shell *shell);
 void			run(t_shell *shell);
-
-/*
-** quotation.c
-*/
-void			handle_quotes(char **input_string);
-int				is_quote(char c);
 
 /*
 ** handle_error.c

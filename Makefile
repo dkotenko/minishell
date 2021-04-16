@@ -6,7 +6,7 @@
 #    By: clala <clala@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/15 16:58:46 by clala             #+#    #+#              #
-#    Updated: 2021/04/11 12:30:30 by clala            ###   ########.fr        #
+#    Updated: 2021/04/16 23:38:41 by clala            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,6 @@ ALL_C =	main.c \
 		exec_bin.c \
 		do_cd.c \
 		environ.c \
-		quotation.c \
 		input.c \
 		signals.c \
 		handle_status.c \

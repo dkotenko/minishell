@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/03/20 19:53:55 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/16 23:53:54 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,7 @@ void	handle_status_variable(t_shell *shell, char *s, int *i)
 	dollar_sign_pos = *i;
 	start = *i + 1;
 	
-	while (s[*i + 1] && !is_space_tab(s[*i + 1]) &&
-	!is_quote(s[*i + 1]) && s[*i + 1] != '\n')
+	while (s[*i + 1] && !is_space_tab(s[*i + 1]))
 		(*i)++;
 	
 	if (start == *i + 1)

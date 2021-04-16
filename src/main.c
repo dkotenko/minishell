@@ -6,11 +6,28 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/04/11 13:08:10 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/16 23:43:37 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+char	*join_3_strings(char *s1, char *s2, char *s3)
+{
+	char		*joined;
+	int			len_1;
+	int			len_2;
+	int			len_3;
+
+	len_1 = ft_strlen(s1);
+	len_2 = ft_strlen(s2);
+	len_3 = ft_strlen(s3);
+	joined = ft_strnew(len_1 + len_2 + len_3);
+	ft_strcpy(joined, s1);
+	ft_strcat(joined + len_1, s2);
+	ft_strcat(joined + len_2, s3);
+	return (joined);
+}
 
 void	separate_cmd_args(t_shell *shell, char *s)
 {
