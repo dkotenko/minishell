@@ -12,28 +12,6 @@
 
 #include "minishell.h"
 
-
-
-t_input		*t_input_new(void)
-{
-	t_input	*new;
-
-	new = (t_input *)ft_memalloc(sizeof(t_input));
-	new->cmd = t_dlist_new();
-	new->buf = t_buffer_create(0);
-	init_cmd(new->cmd);
-	return (new);
-}
-
-void	do_trim(char **s)
-{
-	char	*temp;
-
-	temp = *s;
-	*s = ft_strtrim(*s);
-	free(temp);
-}
-
 int	is_single_dollar_sign(char *s)
 {
 	if (!s || !s[0])
@@ -55,7 +33,8 @@ char	*get_var_extend(char *s)
 	return (ft_strndup(s, i));
 }
 
-void	replace_variable(t_shell *shell, t_buffer *buf, char **curr, char *dollar_pos)
+void	replace_variable(t_shell *shell, t_buffer *buf,
+char **curr, char *dollar_pos)
 {
 	char	*var_extend;
 	char	*value;
@@ -73,8 +52,8 @@ void	replace_variable(t_shell *shell, t_buffer *buf, char **curr, char *dollar_p
 void	replace_env_variables(t_shell *shell, char **s)
 {
 	t_buffer	*buf;
-	char	*dollar_pos;
-	char	*curr;
+	char		*dollar_pos;
+	char		*curr;
 
 	buf = t_buffer_create(1);
 	dollar_pos = ft_strchr(*s, '$');
@@ -97,40 +76,10 @@ void	replace_env_variables(t_shell *shell, char **s)
 	t_buffer_free(&buf);
 }
 
-void	handle_input(t_shell *shell,t_dlist *allocated, char **s)
+void	handle_input(t_shell *shell, char **s)
 {
 	clear_cmd_args(&shell->cmd);
 	replace_env_variables(shell, s);
 	if (*s && (*s)[0])
 		do_trim(s);
-	(void)allocated;
-	
 }
-
-
-
-
-/*
-void	handle_input(t_shell *shell)
-{
-	char			c;   
-	struct termios	oldt;
-	struct termios	newt;
-
-	tcgetattr( STDIN_FILENO, &oldt);
-	newt = oldt;
-	newt.c_lflag &= ~(ICANON | ECHO | ECHOE);
-	tcsetattr( STDIN_FILENO, TCSANOW, &newt);
-	c = 0;
-	while((c = t_buffer_getchar(shell->input->buf)))
-	{
-		//c = shell->input->buf->s[shell->input->buf->i - 1];
-		ft_putchar(c);
-		if (c == '\n')
-			break ;
-		
-	}
-	//ft_printf("%s\n", shell->input->buf->s);
-	tcsetattr( STDIN_FILENO, TCSANOW, &oldt);
-}
-*/

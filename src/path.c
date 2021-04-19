@@ -17,7 +17,7 @@ unix ищет файл во всех папках с начала до конц�
 ищет имя в таблица, далее пытается запустить (доступ/запуск). 
 Нет прав ? пишет zsh: command not found: prog
 */
-/*
+
 static void	handle_struct_direct(t_shell *shell, struct dirent	*s_d,
 struct stat *s_stat, char *dir_path)
 {
@@ -36,7 +36,6 @@ struct stat *s_stat, char *dir_path)
 	}
 }
 
-
 void	add_dir_execs(t_shell *shell, char *dir_path)
 {	
 	struct stat		s_stat;
@@ -51,13 +50,17 @@ void	add_dir_execs(t_shell *shell, char *dir_path)
 	while (s_d)
 	{
 		if (ft_strequ(s_d->d_name, "..") || ft_strequ(s_d->d_name, "."))
+		{
+			s_d = readdir(dir);
 			continue ;
+		}
 		handle_struct_direct(shell, s_d, &s_stat, dir_path);
 		s_d = readdir(dir);
 	}
 	closedir(dir);
 }
-*/
+
+/*
 void				add_dir_execs(t_shell *shell, char *dir_path)
 {
 	char			*curr_exec;
@@ -95,6 +98,7 @@ void				add_dir_execs(t_shell *shell, char *dir_path)
 	}
 	closedir(dir);
 }
+*/
 
 void	handle_exec_table(t_shell *shell)
 {

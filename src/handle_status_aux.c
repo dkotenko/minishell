@@ -12,15 +12,6 @@
 
 #include "minishell.h"
 
-int	is_quote_bs_status(int status)
-{
-	if (status == INPUT_STATUS_STRONG_QUOTE ||
-		status == INPUT_STATUS_WEAK_QUOTE ||
-		status == INPUT_STATUS_BACKSLASH)
-		return (1);
-	return (0);
-}
-
 void	handle_tabs_and_spaces(char **s)
 {
 	char	*temp;
@@ -32,7 +23,7 @@ void	handle_tabs_and_spaces(char **s)
 
 int	is_space_tab(int c)
 {
-	if (c == '\t'|| c == ' ')
+	if (c == '\t' || c == ' ')
 		return (1);
 	return (0);
 }

@@ -28,7 +28,7 @@ int	is_valid_spaces(char *args)
 		else if (n1)
 			ft_printf("%s: %s not found\n", SHELL_NAME, key_val[T_HTABLE_KEY]);
 		else if (n2)
-			ft_printf("%s: %s: \n", SHELL_NAME,
+			ft_printf("%s: %s: \n", SHELL_NAME, \
 			MSG_NOT_AN_IDENT, key_val[T_HTABLE_KEY]);
 		free_2dchararr_terminated(key_val);
 		return (0);
@@ -37,7 +37,7 @@ int	is_valid_spaces(char *args)
 	return (1);
 }
 
-int is_valid_args(char *args)
+int	is_valid_args(char *args)
 {
 	char	*eq;
 
@@ -50,7 +50,7 @@ int is_valid_args(char *args)
 	return (1);
 }
 
-char **get_key_val(char *s)
+char	**get_key_val(char *s)
 {
 	char	**key_val;
 	char	*key;
@@ -71,7 +71,7 @@ char **get_key_val(char *s)
 void	do_setenv(t_shell *shell)
 {
 	char	**key_val;
-	
+
 	if (!is_valid_args(shell->cmd.args))
 		return ;
 	key_val = get_key_val(shell->cmd.args);
@@ -80,12 +80,6 @@ void	do_setenv(t_shell *shell)
 }
 
 int	set_env(t_shell *shell, char *key, char *value)
-{
-	
+{	
 	return (t_htable_set(&shell->env, key, value));
-}
-
-char	*get_env(t_shell *shell, char *key)
-{
-	return (t_htable_get(shell->env, key));
 }

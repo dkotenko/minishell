@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-
-
 char	**get_environ(t_shell *shell)
 {
 	char	**env;
@@ -21,11 +19,8 @@ char	**get_environ(t_shell *shell)
 	int		i;
 
 	env_arr = (char ***)t_htable_get_keys_values(shell->env);
-	if (!(env = (char **)ft_memalloc(sizeof(char *) * 
-	(shell->env->counter + 1))))
-		handle_error(ERR_MALLOC);
+	env = (char **)ft_memalloc(sizeof(char *) * (shell->env->counter + 1));
 	i = -1;
-	
 	while (++i < shell->env->counter)
 	{
 		ft_asprintf(&env[i], "%s=%s",
@@ -56,8 +51,6 @@ void	do_env(t_shell *shell)
 	free_2dchararr_terminated(environ);
 }
 
-
-
 int	do_environ(t_shell *shell)
 {
 	if (ft_strequ(shell->cmd.cmd, "env"))
@@ -74,4 +67,9 @@ int	do_environ(t_shell *shell)
 		t_htable_remove(shell->env, shell->cmd.args);
 	}
 	return (1);
+}
+
+char	*get_env(t_shell *shell, char *key)
+{
+	return (t_htable_get(shell->env, key));
 }

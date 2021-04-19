@@ -29,34 +29,6 @@
 # include "const.h"
 # include "msg.h"
 
-typedef struct s_quote
-{
-	char		q_symbol;
-	int			q_flag;
-	int			has_set;
-	char		*start;
-	char		*s;
-}				t_quote;
-
-typedef struct s_input
-{
-	char		q_symbol;
-	t_dlist		*cmd;
-	int			status;
-	int			prev_status;
-	t_buffer	*buf;
-	char		*start_token;
-	char		*start_cmd;
-}				t_input;
-
-/*
-typedef struct	s_token
-{
-	t_buffer	*buf;
-	int			type;
-}				t_token;
-*/
-
 typedef struct s_curr_cmd
 {
 	char		*cmd;
@@ -65,29 +37,33 @@ typedef struct s_curr_cmd
 
 typedef struct s_shell
 {
-	t_input		*input;
 	t_curr_cmd	cmd;
-	t_dlist		*allocated;
 	t_htable	*executables;
 	t_htable	*env;
+	t_buffer	*buf;
 	char		*path_var;
 	char		*s;
 }				t_shell;
 
+t_shell			*g_shell;
+
+void			handle_signal_chlid(int signo);
 /*
 ** main.c
 */
-char	*join_3_strings(char *s1, char *s2, char *s3);
-
+char			*join_3_strings(char *s1, char *s2, char *s3);
+void			print_promt(void);
 /*
 ** exec_bin.c
 */
 void			exec_bin(void);
 int				exec_prog(const char *program, const char *arg);
 int				do_exit(void);
-int				do_echo(t_curr_cmd cmd);
+int				do_echo(t_curr_cmd *cmd);
+void			do_pwd(t_shell *shell, t_curr_cmd cmd);
 int				exec_command(t_shell *shell);
 void			run(t_shell *shell);
+void			do_type(t_shell *shell, t_curr_cmd cmd);
 
 /*
 ** handle_error.c
@@ -117,16 +93,8 @@ char			**get_key_val(char *s);
 */
 //void			handle_input(t_shell *shell);
 void			interrupt(int a);
-t_input			*t_input_new(void);
-void			handle_input(t_shell *shell, t_dlist *allocated, char **s);
+void			handle_input(t_shell *shell, char **s);
 void			replace_env_variables(t_shell *shell, char **s);
-
-/*
-**handle_status.c
-*/
-void			handle_status_space_tab(t_input *input, char *s, int i);
-void			create_tokens(t_shell *shell, char *s);
-void			handle_status_semicolon(t_input *input, char *s);
 
 /*
 **handle_status_aux.c
@@ -136,7 +104,6 @@ void			handle_tabs_and_spaces(char **s);
 int				is_empty_string(char *s);
 int				is_space_tab(int c);
 int				here(void);
-void			add_token(t_input *input, char *s, int i);
 
 /*
 ** t_shell.c
@@ -159,7 +126,7 @@ char			*get_program_path(t_shell *shell, char *program_name);
 
 void			signal_handler(int signo);
 void			proc_signal_handler(int signo);
-
+void			do_trim(char **s);
 /*
 ** do_cd_aux.c
 */

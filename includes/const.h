@@ -15,8 +15,8 @@
 
 # include "minishell.h"
 
-# define SYMBOL_SINGLE_QUOTE 39
-# define SYMBOL_DOUBLE_QUOTE 34
+# define SYMBOL_SQUOTE 39
+# define SYMBOL_DQUOTE 34
 # define ENV_HOME "HOME"
 # define ENV_PWD "PWD"
 # define ENV_OLDPWD "OLDPWD"
@@ -50,5 +50,12 @@ enum	e_lex_type
 	LEX_TYPE_NORMAL = 0,
 	LEX_TYPE_QUOTED = 1
 }				e_lex_type;
+
+enum	e_hist_status
+{
+	HIST_TAIL = 0,
+	HIST_MIDDLE = 1,
+	HIST_HEAD = 2
+}				e_hist_status;
 
 #endif

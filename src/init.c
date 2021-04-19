@@ -12,12 +12,21 @@
 
 #include "minishell.h"
 
+void	do_trim(char **s)
+{
+	char	*temp;
+
+	temp = *s;
+	*s = ft_strtrim(*s);
+	free(temp);
+}
+
 void	parse_system_environ(t_shell *shell)
 {
-	int		i;
-	char	**splitted;
-	char	*key;
-	char	*value;
+	int			i;
+	char		**splitted;
+	char		*key;
+	char		*value;
 	extern char	**environ;
 
 	i = 0;
@@ -36,17 +45,17 @@ void	parse_system_environ(t_shell *shell)
 	}
 }
 
-t_shell			*t_shell_new(void)
+t_shell	*t_shell_new(void)
 {
 	t_shell		*new;
 
 	new = (t_shell *)ft_memalloc(sizeof(t_shell));
-	new->executables = t_htable_init(
+	new->executables = t_htable_init(\
 		T_HTABLE_INIT_PRIME_NUMBER, &cmp_func, &hash_func_fnv_1a_32);
-	new->env = t_htable_init(
+	new->env = t_htable_init(\
 		T_HTABLE_INIT_PRIME_NUMBER, &cmp_func, &hash_func_fnv_1a_32);
-	new->input = t_input_new();
-	new->allocated = t_dlist_new();
+	new->buf = t_buffer_create(0);
 	parse_system_environ(new);
+	g_shell = new;
 	return (new);
 }

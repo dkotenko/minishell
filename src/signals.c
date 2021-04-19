@@ -12,40 +12,23 @@
 
 #include "minishell.h"
 
-void	proc_signal_handler(int signo)
+void	handle_signal_chlid(int signo)
 {
 	if (signo == SIGINT)
 	{
-		ft_putstr("\n");
-		signal(SIGINT, proc_signal_handler);
+		ft_putstr_fd("\n", STDERR_FILENO);
+		signal(SIGINT, signal_handler);
+		t_buffer_clean(g_shell->buf);
 	}
 }
-
-/*
-** Handles interruption signals on the program
-**
-** @param		signo		The signal number
-** @return		N/A
-*/
 
 void	signal_handler(int signo)
 {
 	if (signo == SIGINT)
 	{
-		ft_putstr("\n");
-		signal(SIGINT, signal_handler);
-	}
-}
-
-void	interrupt(int signal)
-{
-	if (signal == SIGINT)
-	{
-		write(0, "\b\b  \b\b", 6);
-		write(0, "\n", 1);
-		write(0, PROMPT, ft_strlen(PROMPT));
-		exit(0);
+		ft_printf("\n%s ", PROMPT);
+		t_buffer_clean(g_shell->buf);
 	}
 	else
-		write(0, "\b\b  \b\b", 6);
+		ft_printf("\n%s ", PROMPT);
 }

@@ -16,14 +16,14 @@ ALL_C =	main.c \
 		environ.c \
 		input.c \
 		signals.c \
-		handle_status.c \
 		handle_status_aux.c \
 		environ_methods.c \
 		init.c \
 		path.c \
 		cmd.c \
 		do_cd_aux.c \
-		do_cd_check_dir.c
+		do_cd_check_dir.c \
+		do_builtins.c
 
 SRCDIR = ./src
 OBJDIR = ./objs

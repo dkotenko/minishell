@@ -32,8 +32,8 @@ char	*join_3_strings(char *s1, char *s2, char *s3)
 void	separate_cmd_args(t_shell *shell, char *s)
 {
 	t_curr_cmd	cmd;
-	char	*space_pos;
-	char	*temp;
+	char		*space_pos;
+	char		*temp;
 
 	space_pos = ft_strchr(s, ' ');
 	ft_bzero(&cmd, sizeof(t_curr_cmd));
@@ -57,54 +57,63 @@ int	handle_every_command(t_shell *shell, char **splitted)
 	i = -1;
 	temp = NULL;
 	while (splitted[++i])
-	{	
+	{
 		temp = ft_strdup(splitted[i]);
-		handle_input(shell, shell->allocated, &temp);
+		handle_input(shell, &temp);
 		if (temp && temp[0])
 		{
 			separate_cmd_args(shell, temp);
 			exec_command(shell);
 		}
-		temp ? free(temp) : 0;
+		ft_free_int(temp);
 		temp = NULL;
 	}
 	return (1);
 }
 
-int	main()
+void	handle_input_buf(t_shell *shell)
+{
+	char			c;
+	struct termios	oldt;
+	struct termios	newt;
+
+	tcgetattr(STDIN_FILENO, &oldt);
+	newt = oldt;
+	newt.c_lflag &= ~(ICANON | ECHO | ECHOE);
+	tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+	c = t_buffer_getchar(shell->buf);
+	while (c)
+	{
+		ft_putchar(c);
+		if (c == '\n')
+			break ;
+		c = t_buffer_getchar(shell->buf);
+	}
+	tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+}
+
+int	main(void)
 {
 	t_shell	*shell;
 	char	**splitted;
 	char	*s;
 
 	shell = t_shell_new();
-	//signal (SIGINT, &interrupt); //в функции interrupt надо убить форк запущенного процесса
-	signal(SIGINT, signal_handler);
 	s = shell->s;
-	
-	while (ft_printf("%s ", PROMPT) && get_next_line(STDIN_FILENO, &s))
+	while (1)
 	{
-		here();
+		signal(SIGINT, signal_handler);
+		ft_printf("%s ", PROMPT);
+		handle_input_buf(shell);
+		s = ft_strdup(shell->buf->s);
+		t_buffer_clean(shell->buf);
 		if (!ft_strlen(s) && ft_free_int(s))
 			continue ;
 		splitted = ft_strsplit(s, ';');
-		free(s);
 		handle_every_command(shell, splitted);
+		free(s);
 		free_2dchararr_terminated(splitted);
 	}
 	exit(0);
 	return (0);
 }
-
-/*
-doesnt work:
-/bin/ls
-
-$> echo "it works"
-"it works"
-
-$> echo it works
-it works
-*/
-
-
