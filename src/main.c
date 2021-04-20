@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/04/17 00:01:31 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/20 15:53:33 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,19 @@ void	separate_cmd_args(t_shell *shell, char *s)
 	t_curr_cmd	cmd;
 	char		*space_pos;
 	char		*temp;
+	char		*tab_pos;
 
 	space_pos = ft_strchr(s, ' ');
+	tab_pos = ft_strchr(s, '\t');
 	ft_bzero(&cmd, sizeof(t_curr_cmd));
-	if (!space_pos)
+	if (!space_pos && !tab_pos)
 		cmd.cmd = ft_strdup(s);
 	else
 	{
+		if (tab_pos && space_pos && (space_pos - s) > (tab_pos - s))
+			space_pos = tab_pos;
+		else if (tab_pos && !space_pos)
+			space_pos = tab_pos;
 		temp = ft_strndup(s, space_pos - s);
 		cmd.cmd = ft_strtrim(temp);
 		free(temp);
