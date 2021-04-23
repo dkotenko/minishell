@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/04/20 15:53:33 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/23 20:41:26 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,19 +34,13 @@ void	separate_cmd_args(t_shell *shell, char *s)
 	t_curr_cmd	cmd;
 	char		*space_pos;
 	char		*temp;
-	char		*tab_pos;
 
-	space_pos = ft_strchr(s, ' ');
-	tab_pos = ft_strchr(s, '\t');
 	ft_bzero(&cmd, sizeof(t_curr_cmd));
-	if (!space_pos && !tab_pos)
+	if (!is_separated(s))
 		cmd.cmd = ft_strdup(s);
 	else
 	{
-		if (tab_pos && space_pos && (space_pos - s) > (tab_pos - s))
-			space_pos = tab_pos;
-		else if (tab_pos && !space_pos)
-			space_pos = tab_pos;
+		space_pos = get_first_separator(s);
 		temp = ft_strndup(s, space_pos - s);
 		cmd.cmd = ft_strtrim(temp);
 		free(temp);
@@ -90,11 +84,13 @@ void	handle_input_buf(t_shell *shell)
 	c = t_buffer_getchar(shell->buf);
 	while (c)
 	{
-		ft_putchar(c);
+		ft_putchar_fd(c, STDERR_FILENO);
 		if (c == '\n')
 			break ;
 		c = t_buffer_getchar(shell->buf);
 	}
+	if (c == '\n')
+		t_buffer_pop(shell->buf);
 	tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
 }
 
@@ -106,10 +102,11 @@ int	main(void)
 
 	shell = t_shell_new();
 	s = shell->s;
+	
 	while (1)
 	{
 		signal(SIGINT, signal_handler);
-		ft_printf("%s ", PROMPT);
+		print_promt();
 		handle_input_buf(shell);
 		s = ft_strdup(shell->buf->s);
 		t_buffer_clean(shell->buf);

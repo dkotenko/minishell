@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/04/11 14:01:30 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/23 20:35:36 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,9 @@ int	exec_command(t_shell *shell)
 		return (0);
 	if (ft_strequ("exit", s))
 		exit(0);
-	if ((ft_strequ(s, "env") || ft_strequ(s, "setenv") || \
-			ft_strequ(s, "unsetenv")))
+	if (ft_strequ(s, "env") || ft_strequ(s, "setenv") || \
+	ft_strequ(s, "unsetenv") || ft_strequ(s, "unset") || \
+	ft_strequ(s, "export"))
 		do_environ(shell);
 	else if (ft_strequ(s, "echo"))
 		do_echo(&shell->cmd);

@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/04/11 12:31:24 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/23 22:30:05 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ char	*get_var_extend(char *s)
 	if (!s || !s[0])
 		return (NULL);
 	i = 1;
-	while (s[i] && !is_space_tab(s[i]) && s[i] != '$')
+	while (s[i] && !is_space_tab(s[i]) && s[i] != '$' && s[i] != '\n')
 		i++;
 	return (ft_strndup(s, i));
 }
@@ -43,7 +43,10 @@ char **curr, char *dollar_pos)
 	if (var_extend)
 	{
 		value = get_env(shell, var_extend + 1);
-		t_buffer_write(buf, value);
+		if (value)
+		{
+			t_buffer_write(buf, value);
+		}	
 		*curr = dollar_pos + ft_strlen(var_extend);
 		free(var_extend);
 	}

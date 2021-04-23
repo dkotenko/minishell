@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/04/11 13:34:26 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/23 20:54:38 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,18 @@ int	do_environ(t_shell *shell)
 {
 	if (ft_strequ(shell->cmd.cmd, "env"))
 		do_env(shell);
-	else if (ft_strequ(shell->cmd.cmd, "setenv"))
+	else if (ft_strequ(shell->cmd.cmd, "setenv") || \
+	ft_strequ(shell->cmd.cmd, "export"))
 		do_setenv(shell);
-	else if (ft_strequ(shell->cmd.cmd, "unsetenv"))
+	else if (ft_strequ(shell->cmd.cmd, "unsetenv") || \
+	ft_strequ(shell->cmd.cmd, "unset"))
 	{
 		if (!shell->cmd.args)
 		{
-			ft_printf("unsetenv: %s\n", MSG_NOT_ENOUGH_ARGS);
+			if (ft_strequ(shell->cmd.cmd, "unsetenv"))
+				ft_printf("unsetenv: %s\n", MSG_NOT_ENOUGH_ARGS);
+			else
+				ft_printf("unset: %s\n", MSG_NOT_ENOUGH_ARGS);
 			return (1);
 		}
 		t_htable_remove(shell->env, shell->cmd.args);

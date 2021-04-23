@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/04/16 23:53:34 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/23 22:56:05 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@
 # include <signal.h>
 # include <termios.h> 
 # include <term.h>
-# include <curses.h>
 
 # include "libft.h"
 # include "const.h"
@@ -42,6 +41,7 @@ typedef struct s_shell
 	t_htable	*env;
 	t_buffer	*buf;
 	char		*path_var;
+	char		*pwd;
 	char		*s;
 }				t_shell;
 
@@ -134,4 +134,9 @@ char			**get_path_tokens(char *path);
 int				check_dir(char *dir_name, char **error, char *origin_path);
 char			*join_2darr(char **arr, char *sep);
 int				is_tokens_valid(char **path_tokens, char *origin_path);
+
+char	*get_first_separator(char *s);
+int		is_separated(char *s);
+
+
 #endif

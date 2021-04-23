@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/03/20 21:27:04 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/23 17:37:48 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	is_valid_args(char *args)
 	char	*eq;
 
 	eq = ft_strchr(args, '=');
-	if (!eq || eq == args || ft_strchr(args, ' '))
+	if (!eq || eq == args || is_separated(args))
 	{
 		ft_printf("%s: %s\n", SHELL_NAME, MSG_BAD_ASSIG);
 		return (0);

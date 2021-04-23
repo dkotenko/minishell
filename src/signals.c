@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/04/16 23:39:02 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/23 16:56:34 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,18 @@ void	signal_handler(int signo)
 {
 	if (signo == SIGINT)
 	{
-		ft_printf("\n%s ", PROMPT);
+		ft_putstr_fd("\n", STDERR_FILENO);
+		print_promt();
 		t_buffer_clean(g_shell->buf);
 	}
 	else
-		ft_printf("\n%s ", PROMPT);
+	{
+		ft_putstr_fd("\n", STDERR_FILENO);
+		print_promt();
+	}
+}
+
+void	print_promt(void)
+{
+	ft_dprintf(STDERR_FILENO, "%s ", PROMPT);
 }
