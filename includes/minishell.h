@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/04/23 22:56:05 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/24 19:47:12 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <unistd.h>
 # include <signal.h>
 # include <termios.h> 
+# include <curses.h>
 # include <term.h>
 
 # include "libft.h"
@@ -36,13 +37,14 @@ typedef struct s_curr_cmd
 
 typedef struct s_shell
 {
-	t_curr_cmd	cmd;
-	t_htable	*executables;
-	t_htable	*env;
-	t_buffer	*buf;
-	char		*path_var;
-	char		*pwd;
-	char		*s;
+	t_curr_cmd		cmd;
+	t_htable		*executables;
+	t_htable		*env;
+	t_buffer		*buf;
+	char			*path_var;
+	char			*s;
+	t_dlist			*history;
+	t_dlist_node	*history_pointer;
 }				t_shell;
 
 t_shell			*g_shell;
@@ -123,7 +125,6 @@ char			*get_first_arg(t_curr_cmd *cmd);
 */
 void			print_keys(t_htable *table);
 char			*get_program_path(t_shell *shell, char *program_name);
-
 void			signal_handler(int signo);
 void			proc_signal_handler(int signo);
 void			do_trim(char **s);
@@ -135,8 +136,15 @@ int				check_dir(char *dir_name, char **error, char *origin_path);
 char			*join_2darr(char **arr, char *sep);
 int				is_tokens_valid(char **path_tokens, char *origin_path);
 
-char	*get_first_separator(char *s);
-int		is_separated(char *s);
-
+/*
+** aux.c
+*/
+char			*get_first_separator(char *s);
+int				is_separated(char *s);
+char			*get_pwd(t_shell *shell);
+void			handle_input_buf(t_shell *shell);
+void			choose_input_action(t_shell *shell, char *buf);
+int				ft_putchar_int(int c);
+void			handle_args(t_shell *shell);
 
 #endif

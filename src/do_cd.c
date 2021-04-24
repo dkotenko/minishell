@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/04/23 22:53:02 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/24 19:47:35 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ char	*create_relative_path(t_shell *shell, char *path)
 	char	*temp;
 	char	*relative;
 
-	pwd = ft_strdup(get_env(shell, ENV_PWD));
+	pwd = get_pwd(shell);
 	temp = ft_strjoin(pwd, "/");
 	free(pwd);
 	relative = ft_strjoin(temp, path);
@@ -62,62 +62,6 @@ char	*create_path(t_shell *shell, char *s)
 	return (ft_strdup(s));
 }
 
-void	replace_var_in_arg(t_shell *shell, char *to_find, char *env_var)
-{
-	char	*s;
-
-	s = shell->cmd.args;
-	if (ft_strequ(s, to_find))
-	{
-		if (get_env(shell, env_var))
-		{
-			shell->cmd.args = ft_strdup(get_env(shell, env_var));
-			ft_free_int(s);
-		}
-		else
-			ft_strdel(&shell->cmd.args);
-	}
-}
-
-
-void	handle_args(t_shell *shell)
-{
-	char	*s;
-	
-	replace_var_in_arg(shell, "-", ENV_OLDPWD);
-	replace_var_in_arg(shell, "~", ENV_HOME);
-	s = shell->cmd.args;
-	if (ft_strnequ(s, "~", 1))
-	{
-		if (get_env(shell, ENV_HOME))
-			shell->cmd.args = ft_strreplace(s, "~", get_env(shell, ENV_HOME));
-		else
-			shell->cmd.args = ft_strreplace(s, "~", "");
-		ft_free_int(s);
-	}
-	if (!shell->cmd.args)
-		shell->cmd.args = ft_strdup(get_env(shell, ENV_HOME));
-}
-
-char	*get_first_separator(char *s)
-{
-	char	*tab_pos;
-	char	*space_pos;
-
-	tab_pos = ft_strchr(s, '\t');
-	space_pos = ft_strchr(s, ' ');
-	if (tab_pos && space_pos && (space_pos - s) > (tab_pos - s))
-		space_pos = tab_pos;
-	else if (tab_pos && !space_pos)
-		space_pos = tab_pos;
-	return (space_pos);
-}
-
-int		is_separated(char *s)
-{
-	return (ft_strchr(s, ' ') || ft_strchr(s, '\t'));
-}
-
 void	set_env_pwd(t_shell *shell, char *pwd)
 {
 	char	*curr_pwd;
@@ -125,11 +69,12 @@ void	set_env_pwd(t_shell *shell, char *pwd)
 	if (pwd)
 	{
 		curr_pwd = get_env(shell, ENV_PWD);
-		if (!curr_pwd)
-		
-		set_env(shell, ft_strdup(ENV_OLDPWD),
-			ft_strdup(curr_pwd));
-		set_env(shell, ft_strdup(ENV_PWD), pwd);
+		if (curr_pwd)
+		{
+			set_env(shell, ft_strdup(ENV_OLDPWD), \
+				ft_strdup(curr_pwd));
+			set_env(shell, ft_strdup(ENV_PWD), pwd);
+		}
 	}
 }
 

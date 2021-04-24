@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   do_cd.c                                            :+:      :+:    :+:   */
+/*   do_cd_check_dir.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/04/11 13:38:29 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/24 19:47:02 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,4 +49,47 @@ int	check_dir(char *dir_name, char **error, char *origin_path)
 	else
 		exists = is_dir_exists(dir_name);
 	return (exists);
+}
+
+static void	replace_var_in_arg(t_shell *shell, char *to_find, char *env_var)
+{
+	char	*s;
+
+	s = shell->cmd.args;
+	if (ft_strequ(s, to_find))
+	{
+		if (get_env(shell, env_var))
+		{
+			shell->cmd.args = ft_strdup(get_env(shell, env_var));
+			ft_free_int(s);
+		}
+		else
+			ft_strdel(&shell->cmd.args);
+	}
+}
+
+void	handle_args(t_shell *shell)
+{
+	char	*s;
+	char	*home;
+
+	replace_var_in_arg(shell, "-", ENV_OLDPWD);
+	replace_var_in_arg(shell, "~", ENV_HOME);
+	s = shell->cmd.args;
+	if (ft_strnequ(s, "~", 1))
+	{
+		if (get_env(shell, ENV_HOME))
+			shell->cmd.args = ft_strreplace(s, "~", get_env(shell, ENV_HOME));
+		else
+			shell->cmd.args = ft_strreplace(s, "~", "");
+		ft_free_int(s);
+	}
+	if (!shell->cmd.args)
+	{
+		home = get_env(shell, ENV_HOME);
+		if (home)
+			shell->cmd.args = ft_strdup(home);
+		else
+			shell->cmd.args = get_pwd(shell);
+	}
 }

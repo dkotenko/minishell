@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/04/23 20:41:26 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/24 19:42:56 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,29 +71,6 @@ int	handle_every_command(t_shell *shell, char **splitted)
 	return (1);
 }
 
-void	handle_input_buf(t_shell *shell)
-{
-	char			c;
-	struct termios	oldt;
-	struct termios	newt;
-
-	tcgetattr(STDIN_FILENO, &oldt);
-	newt = oldt;
-	newt.c_lflag &= ~(ICANON | ECHO | ECHOE);
-	tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-	c = t_buffer_getchar(shell->buf);
-	while (c)
-	{
-		ft_putchar_fd(c, STDERR_FILENO);
-		if (c == '\n')
-			break ;
-		c = t_buffer_getchar(shell->buf);
-	}
-	if (c == '\n')
-		t_buffer_pop(shell->buf);
-	tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-}
-
 int	main(void)
 {
 	t_shell	*shell;
@@ -102,7 +79,6 @@ int	main(void)
 
 	shell = t_shell_new();
 	s = shell->s;
-	
 	while (1)
 	{
 		signal(SIGINT, signal_handler);

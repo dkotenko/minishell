@@ -6,7 +6,7 @@
 #    By: clala <clala@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/15 16:58:46 by clala             #+#    #+#              #
-#    Updated: 2021/04/16 23:38:41 by clala            ###   ########.fr        #
+#    Updated: 2021/04/24 19:43:19 by clala            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,10 @@ ALL_C =	main.c \
 		cmd.c \
 		do_cd_aux.c \
 		do_cd_check_dir.c \
-		do_builtins.c
+		do_builtins.c \
+		aux.c \
+		handle_input.c \
+		handle_input_actions.c
 
 SRCDIR = ./src
 OBJDIR = ./objs
@@ -46,12 +49,12 @@ FLAGS = -Wall -Wextra -Werror -g
 all: lib $(OBJDIR) $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT)
-	$(CC) $(FLAGS) $(OBJS) -o $@ $(LIBFT)
+	$(CC) $(FLAGS) $(OBJS) -o $@ $(LIBFT) -ltermcap
 
 $(LIBFT): lib
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(INCLUDES) | $(OBJDIR)
-	$(CC) $(FLAGS) -c $< -o $@ -I./$(INCLUDES_DIR) -I./$(LIBFT_DIR)/includes 
+	$(CC) $(FLAGS) -c $< -o $@ -I./$(INCLUDES_DIR) -I./$(LIBFT_DIR)/includes
 
 $(OBJDIR):
 	/bin/mkdir -p $(OBJDIR)

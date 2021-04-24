@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/03/13 14:08:33 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/24 14:50:31 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@
 # define BUILTIN_LIST "exit env setenv unsetenv echo cd pwd type"
 # define CHAR_BUFF_SIZE 1
 # define PROMPT "$>"
+# define TERMNAME_XTERM "xterm-256color"
+# define MAINTERM TERMNAME_XTERM
 
 enum	e_token_type
 {

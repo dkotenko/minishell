@@ -1,45 +1,46 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signals.c                                          :+:      :+:    :+:   */
+/*   aux.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/04/24 19:40:01 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/24 19:45:44 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	handle_signal_chlid(int signo)
+char	*get_pwd(t_shell *shell)
 {
-	if (signo == SIGINT)
-	{
-		ft_putstr_fd("\n", STDERR_FILENO);
-		signal(SIGINT, signal_handler);
-		t_buffer_clean(g_shell->buf);
-	}
-	else
-		ft_putstr_fd("\n", STDERR_FILENO);
-}
+	char	*pwd;
 
-void	signal_handler(int signo)
-{
-	if (signo == SIGINT)
-	{
-		ft_putstr_fd("\n", STDERR_FILENO);
-		print_promt();
-		t_buffer_clean(g_shell->buf);
-	}
+	pwd = get_env(shell, ENV_PWD);
+	if (pwd)
+		pwd = ft_strdup(pwd);
 	else
 	{
-		ft_putstr_fd("\n", STDERR_FILENO);
-		print_promt();
+		pwd = getcwd(pwd, sizeof(char *));
 	}
+	return (pwd);
 }
 
-void	print_promt(void)
+char	*get_first_separator(char *s)
 {
-	ft_dprintf(STDERR_FILENO, "%s ", PROMPT);
+	char	*tab_pos;
+	char	*space_pos;
+
+	tab_pos = ft_strchr(s, '\t');
+	space_pos = ft_strchr(s, ' ');
+	if (tab_pos && space_pos && (space_pos - s) > (tab_pos - s))
+		space_pos = tab_pos;
+	else if (tab_pos && !space_pos)
+		space_pos = tab_pos;
+	return (space_pos);
+}
+
+int	is_separated(char *s)
+{
+	return (ft_strchr(s, ' ') || ft_strchr(s, '\t'));
 }

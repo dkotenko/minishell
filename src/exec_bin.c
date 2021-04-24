@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/04/23 20:35:36 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/24 16:52:39 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,12 @@ void	run(t_shell *shell)
 	environ = get_environ(shell);
 	argv = get_argv(shell, &shell->cmd);
 	pid = fork();
+	signal(SIGINT, handle_signal_chlid);
 	if (pid == -1)
 		exit(ft_printf("fork error\n"));
 	if (!pid)
 	{
+		signal(SIGINT, SIG_DFL);
 		if (!argv[0] || -1 == execve(argv[0], argv, environ))
 			ft_printf("%s: %s: %s\n", SHELL_NAME, MSG_CMD_NOT_FOUND, argv[0]);
 		exit(EXIT_SUCCESS);
