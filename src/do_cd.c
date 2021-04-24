@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/04/24 19:47:35 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/24 20:58:01 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,8 @@ void	set_env_pwd(t_shell *shell, char *pwd)
 				ft_strdup(curr_pwd));
 			set_env(shell, ft_strdup(ENV_PWD), pwd);
 		}
+		else
+			set_env(shell, ft_strdup(ENV_PWD), pwd);
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/04/24 11:46:15 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/24 21:39:30 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,10 @@ void	update_exec_table(t_shell *shell)
 	if (ft_strequ(shell->path_var, curr_path))
 		return ;
 	ft_free_int(shell->path_var);
-	shell->path_var = ft_strdup(curr_path);
+	if (curr_path)
+		shell->path_var = ft_strdup(curr_path);
+	else
+		shell->path_var = curr_path;
 	t_htable_clean_all(shell->executables);
 	handle_exec_table(shell);
 }

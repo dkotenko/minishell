@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 13:51:54 by clala             #+#    #+#             */
-/*   Updated: 2021/04/11 13:36:57 by clala            ###   ########.fr       */
+/*   Updated: 2021/04/24 22:09:49 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static char	**cmd_to_argv(t_curr_cmd *cmd)
 	i = 0;
 	while (cmd->args && args[i])
 	{
-		argv[1 + i] = ft_strdup(args[i]);
+		argv[1 + i] = ft_strtrim(args[i]);
 		i++;
 	}
 	if (args)
